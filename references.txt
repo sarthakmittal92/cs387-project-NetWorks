@@ -1,0 +1,18 @@
+Repositories
+https://github.com/topics/linkedin-clone
+
+React + Node
+https://github.com/CleverProgrammers/cp-linkedin-clone
+https://github.com/aseerkt/pern-linkedin
+
+React + Firebase
+https://github.com/DeeshanSharma/linkedin-clone
+https://github.com/mahendrasaikumargandham/LinkedIn-Clone
+https://github.com/br-adriel/react-linkedin-clone
+https://github.com/adarshtiwari1998/linkedin-web-app
+https://github.com/HamzaZaidiX/LinkedIn-Clone-React-JS
+https://github.com/Nesim11/linkedin-clone
+
+YouTube
+https://www.youtube.com/watch?v=xP3cxbDUtrc
+https://www.youtube.com/watch?v=tbvguOj8C-o
