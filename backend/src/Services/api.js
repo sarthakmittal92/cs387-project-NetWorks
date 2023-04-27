@@ -20,6 +20,10 @@ const createRestApi = app => {
     app.post('/Q1',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.authenticate(req.body.email,req.body.password);
+            if(x.value){
+                session = req.session;
+                session.userid = database.getUserID(req.body.email);
+            }
             res.json(x);
             })();
     });
@@ -31,6 +35,14 @@ const createRestApi = app => {
             })();
     });
 
+    app.post('/Q5',urlencodedParser,auth_user,(req,res) => {
+        try {
+            req.session.destroy();
+            return res.json({value:1});
+        } catch (error) {
+            return res.json({value:0});
+        }
+     });
 
 
     
@@ -45,10 +57,6 @@ const createRestApi = app => {
     app.post('/IIS',urlencodedParser,auth_user,(req,res)=>{
         res.json({value:req.session.inst})
     })
-
-    app.post('/logout',urlencodedParser,auth_user,(req,res) => {
-        req.session.destroy();
-     });
 
     app.post('/home',urlencodedParser,auth_user, function (req, res) {
     (async () => {

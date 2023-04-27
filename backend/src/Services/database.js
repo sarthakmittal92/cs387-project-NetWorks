@@ -25,16 +25,35 @@ async function getHashedFromDB(email) {
   }
 }
 
+async function isRec(email){
+  const values = [email];
+  try {
+    const res = await pool.query("select applicant_or_recruiter from users where email=$1;",
+    values);
+    if(res.rowCount==0){
+      throw 1;
+    }
+    else{
+      return res.rows[0].applicant_or_recruiter;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function authenticate(email,password) {
   try{
     var x = await getHashedFromDB(email);
     var y = await isRec(email);
     bcrypt.compare(password,x,(error,result)=>{
       if(error){
-        return {value:0,rec:-2,result:"Incorrect Password!"};
+        return {value:0,rec:-3,result:"Error Occurred"};
+      }
+      if(result){
+        return {value:1,rec:y,result:"Logged In!"};
       }
       else{
-        return {value:1,rec:y,result:"Logged In!"};
+        return {value:0,rec:-2,result:"Incorrect Password!"};
       }
     });
   }catch{
@@ -60,6 +79,9 @@ async function register(user_name,email,password,rec_app) {
       if(!y.value){
         if(y.rec===-2){
           return {value:0,rec:-1,result:"User already exist!"};
+        }
+        else{
+          return {value:0,rec:-1,result:"Oops! An error occurred!"};
         }
       }
       if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
@@ -98,7 +120,25 @@ async function register(user_name,email,password,rec_app) {
   }
 }
 
-
+// Returns an integer userid corresponding to the email if it exists, else -1
+async function getUserID(email){
+  const values = [email];
+  try {
+    const res = await pool.query(
+      "SELECT user_id FROM users WHERE email=$1",
+      values
+    );
+    if(res.rowCount==0){
+      return -1;
+    }
+    else{
+      return res.rows[0].user_id;
+    }
+  } catch (error) {
+    console.log(error);
+    return -1;
+  }
+}
 
 
 
@@ -372,22 +412,6 @@ async function getSemYearsForUser(user_id){
   }
 }
 
-async function isRec(email){
-  const values = [email];
-  try {
-    const res = await pool.query("select applicant_or_recruiter from users where email=$1;",
-    values);
-    if(res.rowCount==0){
-      throw 1;
-    }
-    else{
-      return res.rows[0].applicant_or_recruiter;
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function getAllStudents(){
   const values = [];
   try {
@@ -414,6 +438,7 @@ async function getAlldeptname(){
 module.exports = {
   authenticate,
   register,
+  getUserID,
   getUserInfo,
   getAllUserCourses,
   getCurrentCourseInfo,
