@@ -1,8 +1,19 @@
 var bodyParser = require('body-parser');
 const e = require('cors');
 const multer  = require('multer')
-const photo = multer({ dest: 'uploads/' })
-const post = multer({ dest: 'uploads/ '})
+const path = require('path')
+
+const storage = multer.diskStorage({
+    destination: "./Uploads",
+    filename: function (req, file, cb) {
+      cb(
+        null,
+        file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      );
+    },
+});
+const upload = multer({storage: storage});
+
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 const database = require('./database.js');
 var session;
@@ -20,6 +31,7 @@ const createRestApi = app => {
     app.post('/Q1',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.authenticate(req.body.email,req.body.password);
+            console.log(x);
             if(x.value){
                 session = req.session;
                 session.userid = await database.getUserID(req.body.email);
@@ -31,11 +43,26 @@ const createRestApi = app => {
     app.post('/Q2',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.register(req.body.user_name,req.body.email,req.body.password,req.body.rec_app);
+            console.log(x,"yo");
             res.json(x);
             })();
     });
 
-    app.post('/Q5',urlencodedParser,auth_user,(req,res) => {
+    app.post('/Q3',urlencodedParser, function (req, res) {
+        (async () => {
+            var x = await database.getUserList();
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q4',urlencodedParser, function (req, res) {
+        (async () => {
+            var x = await database.acceptRequest(req.body.sender, req.body.receiver);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q5',urlencodedParser,(req,res) => {
         try {
             req.session.destroy();
             return res.json({value:1});
@@ -43,7 +70,15 @@ const createRestApi = app => {
             return res.json({value:0});
         }
      });
-
+    
+    app.post('/Q6', urlencodedParser, upload.single("image"), (req,res) => {
+        (async () => {
+            console.log(req.file);
+            //const save = await saveImage(req.session.userid, req.file.filename);
+            var x = {result:"Successful"};
+            res.json(x);
+            })();
+    });
 
     
     app.post('/exist',urlencodedParser,(req,res)=>{

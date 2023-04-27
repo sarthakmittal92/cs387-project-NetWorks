@@ -40,7 +40,8 @@ export const Login  = ({ setAuth }) => {
             console.log(user_id,password,"reached here");
           showToastMessage('Fill all Fields',0);
         }else{
-          fetch('http://localhost:5001/Q1', {
+          (async () => {
+            const dat = await fetch('http://localhost:5001/Q1', {
               method: 'POST',   
               headers: {
                 'Content-type': 'application/json',
@@ -51,20 +52,15 @@ export const Login  = ({ setAuth }) => {
                 email: user_id,
                 password: password
             }),
-            })
-          .then((response) => response.json())
-          .then((dat) => {
-              if(dat.value){
-                showToastMessage(dat.result,1); 
-                navigate(redirectPathS, { replace: true });
-              }
-              else{
-                showToastMessage(dat.result,0); 
-              }
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+            }).then((response) => response.json());
+            if(dat.value){
+              showToastMessage(dat.result,1); 
+              navigate(redirectPathS, { replace: true });
+            }
+            else{
+              showToastMessage(dat.result,0); 
+            }
+          })();
         }
   
       }
@@ -74,11 +70,12 @@ export const Login  = ({ setAuth }) => {
         var username = document.getElementById("slogname").value;
         var email = document.getElementById("slogemail").value;
         var password = document.getElementById("slogpass").value;
-        var ra = document.getElementById("app_or_rec").value;
+        var ra = document.getElementById("app_or_rec").checked;
         if(username.length === 0 || password.length === 0 || email.length === 0){
           showToastMessage('Fill all Fields !',0);
         }else{
-          fetch('http://localhost:5001/Q2', {
+          (async () => {
+            const response = await fetch('http://localhost:5001/Q2', {
               method: 'POST',   
               headers: {
                 'Content-type': 'application/json',
@@ -91,22 +88,47 @@ export const Login  = ({ setAuth }) => {
                 password: password,
                 rec_app: ra
             }),
-            })
-          .then((response) => response.json())
-          .then((dat) => {
-            console.log(dat);
-              if(dat.value){
-                showToastMessage(dat.result,1); 
-                var checkBox = document.getElementById("reg-log");
-                checkBox.checked = !checkBox.checked;
-              }
-              else{
-                showToastMessage(dat.result,0); 
-              }
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+            }).then((response) => response.json());
+              if(response.value){
+                    showToastMessage(response.result,1); 
+                    var checkBox = document.getElementById("reg-log");
+                    checkBox.checked = !checkBox.checked;
+                  }
+                  else{
+                    showToastMessage(response.result,0); 
+                  }
+          })();
+          
+          // fetch('http://localhost:5001/Q2', {
+          //     method: 'POST',   
+          //     headers: {
+          //       'Content-type': 'application/json',
+          //     },
+          //     credentials:'include',
+          //     withCredentials:true,
+          //     body: JSON.stringify({
+          //       user_name: username,
+          //       email:email,
+          //       password: password,
+          //       rec_app: ra
+          //   }),
+          //   })
+          // .then((response) => response.json())
+          // .then((dat) => {
+          //   var json = JSON.parse(dat);
+          //   console.log(json.result);
+          //     if(dat.value){
+          //       showToastMessage(dat.result,1); 
+          //       var checkBox = document.getElementById("reg-log");
+          //       checkBox.checked = !checkBox.checked;
+          //     }
+          //     else{
+          //       showToastMessage(dat.result,0); 
+          //     }
+          // })
+          // .catch((err) => {
+          //   console.log(err.message);
+          // });
         }
       }
 

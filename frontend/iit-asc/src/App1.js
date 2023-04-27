@@ -6,6 +6,7 @@ import { Landing } from './links/landing/Landing'
 import { Home } from './links/home/home'
 import { Chat } from './links/chat/chat'
 import Network from './links/network/network'
+import {Temp} from './links/temp/temp'
 
 function App() {
   
@@ -16,6 +17,7 @@ function App() {
         <Route path='/home' element={<Home />}/>
         <Route path='/chat' element={<Chat />}/>
         <Route path='/network' element={<Network />}/>
+        <Route path='/temp' element={<Temp />}/>
       </Routes>
   )
 }

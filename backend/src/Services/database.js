@@ -10,18 +10,18 @@ async function getHashedFromDB(email) {
   const values = [email];
   try{
       const res = await pool.query(
-          "SELECT encrypted_password FROM users WHERE email=$1",
+          "SELECT encrypted_password FROM users WHERE email=$1;",
           values
         );
-      if(res.rowCount===0){
-        throw 1;
+      if(res.rowCount==0){
+        return "";
       }
       else{
         return res.rows[0].encrypted_password;
       }
      
   }catch (error) {
-      throw error;
+    console.log(error);
   }
 }
 
@@ -31,13 +31,30 @@ async function isRec(email){
     const res = await pool.query("select applicant_or_recruiter from users where email=$1;",
     values);
     if(res.rowCount==0){
-      throw 1;
+      return -1;
     }
     else{
       return res.rows[0].applicant_or_recruiter;
     }
   } catch (error) {
-    throw error;
+    console.log(error);
+  }
+}
+async function checkPassword(password,hash,y){
+
+  try {
+    var xyz;
+    var result= await bcrypt.compare(password,hash);
+    if(result){
+      xyz =  {value:1,rec:y,result:"Logged In!"};
+    }
+    else{
+      xyz =  {value:0,rec:-2,result:"Incorrect Password!"};
+    }
+    console.log(xyz);
+    return xyz;
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -45,27 +62,17 @@ async function authenticate(email,password) {
   try{
     var x = await getHashedFromDB(email);
     var y = await isRec(email);
-    console.log(x,y,"here")
-    const valid = await bcrypt.compare(password,x,(error,result));
-    console.log(valid);
-    // bcrypt.compare(password,x,(error,result)=>{
-    //   // if(error){
-        
-    //   //   return {value:0,rec:-3,result:"Error Occurred"};
-    //   // }
-    //   console.log(error,"pandu1");
-    //   console.log(result);
-    //   if(result){
-        
-    //     return {value:1,rec:y,result:"Logged In!"};
-    //   }
-    //   else{
-    //     return {value:0,rec:-2,result:"Incorrect Password!"};
-    //   }
-    // });
-  }catch{
-    console.log(error,"pandu");
-    return {value:0,rec:-1,result:"Incorrect Email_id!"};
+    console.log(x,y);
+    if(x===""){
+      return {value:0, rec:-4, result:"Incorrect Email_id!"};
+    }
+    else if(y===-1){
+      return {value:0, rec:-5, result:"Incorrect Email_id!"};
+    }
+    return await checkPassword(password,x,y);
+    
+  }catch(error){
+    return {value:0,rec:-1,result:"Oops! An Error FUCKED YOU!"};
   }
 }
 
@@ -83,14 +90,12 @@ async function getnewuser_num(){
 
 async function register(user_name,email,password,rec_app) {
   try{
-      var y = await authenticate(email,password);
-      console.log(y,email,password,user_name,rec_app);
-      if(y.value===0){
-        if(y.rec===-2){
-          return {value:0,rec:-1,result:"User already exist!"};
-        }
+      var y = await checkUser(email);
+      console.log(y);
+      if(y===1){
+        return {value:0,rec:-1,result:"User already exist!"};
       }
-      if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
+      // if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
       var z = await getnewuser_num();
       bcrypt.hash(password, 10, function(err, hash) {
         // Store hash in database here
@@ -118,9 +123,8 @@ async function register(user_name,email,password,rec_app) {
         .catch(function (error) {
           console.log(error);
         });
-
-        return {value:1,rec:rec_app,result:"Registered!"};
       });
+      return {value:1,rec:rec_app,result:"Registered!"};
   }catch (error) {
       throw error;
   }
@@ -131,7 +135,7 @@ async function getUserID(email){
   const values = [email];
   try {
     const res = await pool.query(
-      "SELECT user_id FROM users WHERE email=$1",
+      "SELECT user_id FROM users WHERE email=$1;",
       values
     );
     if(res.rowCount==0){
@@ -146,6 +150,74 @@ async function getUserID(email){
   }
 }
 
+async function getUserList(){
+  try {
+    const res = await pool.query(
+      "SELECT username, email, user_id FROM users;"
+    );
+    return {value:1, users: res.rows};
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function acceptRequest(sender, receiver){
+  try {
+    const values = [sender, receiver];
+    const res = await pool.query(
+      "SELECT user1, user2 FROM conn_invite WHERE user1=$1 AND user2=$2;",
+      values
+    );
+    if(res.rowCount==0){
+      return {value:0, result:"Invite doesn't exists!"};
+    }
+    else{
+      const res1 = await pool.query(
+        "INSERT INTO connection values($1,$2);",
+        values
+      );
+      const res2 = await pool.query(
+        "INSERT INTO connection values($2,$1);",
+        values
+      );
+      return {value:1, result:"Successful"};
+    }
+
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Oops! An Error Occurred!"};
+  }
+}
+
+async function checkUser(email){
+  try {
+    const values = [email];
+    const res = await pool.query(
+      "SELECT username from users where email=$1;",
+      values
+    );
+    if(res.rowCount!=0){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function saveImage(userid, filename){
+  const values = [userid, filename];
+  try {
+    const res = await pool.query(
+      "UPDATE users SET photo=$2 WHERE user_id=$1;",
+      values
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 async function getUserInfo(user_id) {
@@ -445,6 +517,12 @@ module.exports = {
   authenticate,
   register,
   getUserID,
+  getUserList,
+  acceptRequest,
+  isRec,
+  checkUser,
+  saveImage,
+  
   getUserInfo,
   getAllUserCourses,
   getCurrentCourseInfo,
@@ -458,7 +536,6 @@ module.exports = {
   getSectionForCourse,
   dropCourse,
   getSemYearsForUser,
-  isRec,
   getAllStudents,
   getAlldeptname
 };
