@@ -80,9 +80,6 @@ async function register(user_name,email,password,rec_app) {
         if(y.rec===-2){
           return {value:0,rec:-1,result:"User already exist!"};
         }
-        else{
-          return {value:0,rec:-1,result:"Oops! An error occurred!"};
-        }
       }
       if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
       var z = await getnewuser_num();
