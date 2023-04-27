@@ -4,26 +4,25 @@
     border: 2px solid black;
 } */
 
-div.toolbar {
+.toolbar {
     height: 2cm;
     width: 100%;
-    border: 2px solid black;
 }
 
-div.network-search {
+.network-search {
     height: 1.5cm;
     width: 100%;
     border: 2px solid black;
 }
 
-div.invitations {
+.invitations {
     height: 7cm;
     width: 100%;
     border: 2px solid black;
     overflow-y: scroll;
 }
 
-div.connections {
+.connections {
     height: 7cm;
     width: 100%;
     border: 2px solid black;

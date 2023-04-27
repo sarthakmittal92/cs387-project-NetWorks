@@ -13,7 +13,7 @@ async function getHashedFromDB(email) {
           "SELECT encrypted_password FROM users WHERE email=$1",
           values
         );
-      if(res.rowCount==0){
+      if(res.rowCount===0){
         throw 1;
       }
       else{
@@ -45,18 +45,26 @@ async function authenticate(email,password) {
   try{
     var x = await getHashedFromDB(email);
     var y = await isRec(email);
-    bcrypt.compare(password,x,(error,result)=>{
-      if(error){
-        return {value:0,rec:-3,result:"Error Occurred"};
-      }
-      if(result){
-        return {value:1,rec:y,result:"Logged In!"};
-      }
-      else{
-        return {value:0,rec:-2,result:"Incorrect Password!"};
-      }
-    });
+    console.log(x,y,"here")
+    const valid = await bcrypt.compare(password,x,(error,result));
+    console.log(valid);
+    // bcrypt.compare(password,x,(error,result)=>{
+    //   // if(error){
+        
+    //   //   return {value:0,rec:-3,result:"Error Occurred"};
+    //   // }
+    //   console.log(error,"pandu1");
+    //   console.log(result);
+    //   if(result){
+        
+    //     return {value:1,rec:y,result:"Logged In!"};
+    //   }
+    //   else{
+    //     return {value:0,rec:-2,result:"Incorrect Password!"};
+    //   }
+    // });
   }catch{
+    console.log(error,"pandu");
     return {value:0,rec:-1,result:"Incorrect Email_id!"};
   }
 }
@@ -76,20 +84,18 @@ async function getnewuser_num(){
 async function register(user_name,email,password,rec_app) {
   try{
       var y = await authenticate(email,password);
-      if(!y.value){
+      console.log(y,email,password,user_name,rec_app);
+      if(y.value===0){
         if(y.rec===-2){
           return {value:0,rec:-1,result:"User already exist!"};
-        }
-        else{
-          return {value:0,rec:-1,result:"Oops! An error occurred!"};
         }
       }
       if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
       var z = await getnewuser_num();
       bcrypt.hash(password, 10, function(err, hash) {
         // Store hash in database here
-        const values = [z,user_name,email,hash,"","","",-1,rec_app];
-        const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, $8, $9);",values);
+        const values = [z,user_name,email,hash,"","","",rec_app];
+        const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, null, $8);",values);
         var data = {
           "username": user_name,
           "secret": hash,

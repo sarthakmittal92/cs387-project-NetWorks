@@ -38,7 +38,7 @@ export const Login  = ({ setAuth }) => {
         console.log(user_id,password,"reached here1");
         if(user_id.length === 0 || password.length === 0){
             console.log(user_id,password,"reached here");
-          showToastMessage('Username or Password Field is Empty',0);
+          showToastMessage('Fill all Fields',0);
         }else{
           fetch('http://localhost:5001/Q1', {
               method: 'POST',   
@@ -48,7 +48,7 @@ export const Login  = ({ setAuth }) => {
               credentials:'include',
               withCredentials:true,
               body: JSON.stringify({
-                user_id: user_id,
+                email: user_id,
                 password: password
             }),
             })
@@ -67,6 +67,47 @@ export const Login  = ({ setAuth }) => {
           });
         }
   
+      }
+
+      const register = () =>{
+
+        var username = document.getElementById("slogname").value;
+        var email = document.getElementById("slogemail").value;
+        var password = document.getElementById("slogpass").value;
+        var ra = document.getElementById("app_or_rec").value;
+        if(username.length === 0 || password.length === 0 || email.length === 0){
+          showToastMessage('Fill all Fields !',0);
+        }else{
+          fetch('http://localhost:5001/Q2', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+              body: JSON.stringify({
+                user_name: username,
+                email:email,
+                password: password,
+                rec_app: ra
+            }),
+            })
+          .then((response) => response.json())
+          .then((dat) => {
+            console.log(dat);
+              if(dat.value){
+                showToastMessage(dat.result,1); 
+                var checkBox = document.getElementById("reg-log");
+                checkBox.checked = !checkBox.checked;
+              }
+              else{
+                showToastMessage(dat.result,0); 
+              }
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+        }
       }
 
     return(
@@ -118,11 +159,14 @@ export const Login  = ({ setAuth }) => {
                                                 </div>
                                                 <div className="form-group swb">
                                                     Do you want to Register as Recruiter?
-                                                  <label class="switch" >
+                                                    <div>
+                                                    <label className="switch" >
                                                     <input type="checkbox" id="app_or_rec"/>
-                                                    <span class="slider round"></span>
-                                                    </label></div>
-                                                <a href="/l" className="btn mt-4">Register</a>
+                                                    <span className="slider round"></span>
+                                                    </label>
+                                                    </div>
+                                                  </div>
+                                                <div onClick={register} className="btn mt-4">Register</div>
                                             </div>
                                         </div>
                                     </div>

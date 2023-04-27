@@ -2,7 +2,7 @@
     margin: 0.5%;
     height: 2cm;
     max-width: 100%;
-    border: 2px solid black;
+    /* border: 2px solid black; */
 }
 
 .profile{
@@ -77,5 +77,5 @@
     position: relative;
     overflow: hidden;
     height:100vh;
-    border: 2px solid black;
+    /* border: 2px solid black; */
 }

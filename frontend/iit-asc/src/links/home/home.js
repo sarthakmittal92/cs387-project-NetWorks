@@ -1,5 +1,6 @@
 import "./home.css"
 import React from "react";
+import { Navbar} from '../navbar/navbar'
 
 export const Home = () => {
 
@@ -7,9 +8,8 @@ export const Home = () => {
         <>
             <div class="home">
                 <div class = "toolbar">
-                    toolbar  
+                    <Navbar/> 
                 </div>
-
                 <div class = "profile">
                     <div class="pphoto">
 

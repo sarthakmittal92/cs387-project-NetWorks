@@ -22,7 +22,7 @@ const createRestApi = app => {
             var x = await database.authenticate(req.body.email,req.body.password);
             if(x.value){
                 session = req.session;
-                session.userid = database.getUserID(req.body.email);
+                session.userid = await database.getUserID(req.body.email);
             }
             res.json(x);
             })();
