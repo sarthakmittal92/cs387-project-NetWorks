@@ -88,8 +88,8 @@ async function register(user_name,email,password,rec_app) {
       var z = await getnewuser_num();
       bcrypt.hash(password, 10, function(err, hash) {
         // Store hash in database here
-        const values = [z,user_name,email,hash,"","","",-1,rec_app];
-        const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, $8, $9);",values);
+        const values = [z,user_name,email,hash,"","","",rec_app];
+        const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, null, $8);",values);
         var data = {
           "username": user_name,
           "secret": hash,
@@ -139,6 +139,46 @@ async function getUserID(email){
     return -1;
   }
 }
+
+async function getUserList(){
+  try {
+    const res = await pool.query(
+      "SELECT username, email, user_id FROM users"
+    );
+    return {value:1, users: res.rows};
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function acceptRequest(sender, receiver){
+  try {
+    const values = [sender, receiver];
+    const res = await pool.query(
+      "SELECT user1, user2 FROM conn_invite WHERE user1=$1 AND user2=$2",
+      values
+    );
+    if(res.rowCount==0){
+      return {value:0, result:"Invite doesn't exists!"};
+    }
+    else{
+      const res1 = await pool.query(
+        "INSERT INTO connection values($1,$2)",
+        values
+      );
+      const res2 = await pool.query(
+        "INSERT INTO connection values($2,$1)",
+        values
+      );
+      return {value:1, result:"Successful"};
+    }
+
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Oops! An Error Occurred!"};
+  }
+}
+
 
 
 
@@ -439,6 +479,10 @@ module.exports = {
   authenticate,
   register,
   getUserID,
+  getUserList,
+  acceptRequest,
+  isRec,
+
   getUserInfo,
   getAllUserCourses,
   getCurrentCourseInfo,
@@ -452,7 +496,6 @@ module.exports = {
   getSectionForCourse,
   dropCourse,
   getSemYearsForUser,
-  isRec,
   getAllStudents,
   getAlldeptname
 };
