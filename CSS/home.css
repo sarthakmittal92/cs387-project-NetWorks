@@ -1,0 +1,81 @@
+.toolbar{
+    margin: 0.5%;
+    height: 2cm;
+    max-width: 100%;
+    border: 2px solid black;
+}
+
+.profile{
+    margin: 0.5%;
+    margin-left: 8%;
+    max-height: 75%;
+    width: 20%;
+    border: 2px solid black;
+    font-size: large;
+    overflow-y: scroll;
+    float: left;
+}
+
+.pphoto{
+    margin-top:2cm;
+    margin-left: auto;
+    margin-right: auto;
+    height: 2cm;
+    width: 2cm;
+    border-radius: 50%;
+    border: 2px solid black;
+    background-image: url('1.png');
+    background-size:     cover; 
+}
+
+.desc{
+    margin: 3%;
+    max-height:100%;
+    max-width: 100%;
+    border: 2px solid black;
+    font-size: large;
+}
+
+.feed{
+    margin: 0.5%;
+    max-height: 100%;
+    width: 40%;
+    border: 2px solid black;
+    font-size: large;
+    float: left;
+}
+
+.mposts{
+    margin: 2%;
+    height: 4cm;
+    max-width: 100%;
+    border: 2px solid black;
+    font-size: large;
+}
+
+.fposts{
+    margin: 0.5%;
+    max-height: 100%;
+    max-width: 100%;
+    border: 2px solid black;
+    font-size: large;
+    overflow-y: scroll;
+}
+.event{
+    position: relative;
+    margin: 0.5%;
+    max-height: 75%;
+    width: 20%;
+    border: 2px solid black;
+    font-size: large;
+    overflow-y: scroll;
+    float: left;
+    
+}
+
+.home{
+    position: relative;
+    overflow: hidden;
+    height:100vh;
+    border: 2px solid black;
+}
