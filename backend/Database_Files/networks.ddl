@@ -118,6 +118,9 @@ CREATE TABLE job(
     primary key (job_id)
 );
 
+CREATE TABLE numusers(num_us INT);
+INSERT into numusers(num_us) values (0);
+
 ALTER TABLE users
     ADD CONSTRAINT fk_currentwork_id FOREIGN KEY (currentwork_id) REFERENCES work(work_id) 
     ON DELETE SET NULL ON UPDATE CASCADE;

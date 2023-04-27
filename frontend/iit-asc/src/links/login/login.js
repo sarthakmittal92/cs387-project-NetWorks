@@ -116,6 +116,12 @@ export const Login  = ({ setAuth }) => {
                                                     <input type="password" name="logpass" className="form-style" placeholder="Your Password" id="slogpass" />
                                                     <i className="input-icon uil uil-lock-alt"></i>
                                                 </div>
+                                                <div className="form-group swb">
+                                                    Do you want to Register as Recruiter?
+                                                  <label class="switch" >
+                                                    <input type="checkbox" id="app_or_rec"/>
+                                                    <span class="slider round"></span>
+                                                    </label></div>
                                                 <a href="/l" className="btn mt-4">Register</a>
                                             </div>
                                         </div>

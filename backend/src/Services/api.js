@@ -19,18 +19,21 @@ const createRestApi = app => {
 
     app.post('/Q1',urlencodedParser, function (req, res) {
         (async () => {
-            var x = await database.authenticate(req.body.user_id);
+            var x = await database.authenticate(req.body.email,req.body.password);
             res.json(x);
             })();
     });
 
     app.post('/Q2',urlencodedParser, function (req, res) {
         (async () => {
-            var x = await database.register(req.body.user_id);
+            var x = await database.register(req.body.user_name,req.body.email,req.body.password,req.body.rec_app);
             res.json(x);
             })();
     });
 
+
+
+    
     app.post('/exist',urlencodedParser,(req,res)=>{
         if(req.session.userid){
             res.json({value:1,inst:req.session.inst})

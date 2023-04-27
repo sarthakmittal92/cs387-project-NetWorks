@@ -4,15 +4,15 @@ var fs = require('fs')
 const data = fs.readFileSync('../config.txt',{encoding:'utf8', flag:'r'});
 console.log(JSON.parse(data))
 const pool = new Pool(JSON.parse(data));
+var axios = require('axios');
 
-async function getHashedFromDB(user_id) {
-  const values = [user_id];
+async function getHashedFromDB(email) {
+  const values = [email];
   try{
       const res = await pool.query(
-          "SELECT encrypted_password FROM users WHERE id=$1",
+          "SELECT encrypted_password FROM users WHERE email=$1",
           values
         );
-      console.log("Fetched from DB");
       if(res.rowCount==0){
         throw 1;
       }
@@ -25,13 +25,13 @@ async function getHashedFromDB(user_id) {
   }
 }
 
-async function authenticate(user_id,password) {
+async function authenticate(email,password) {
   try{
-    var x = await getHashedFromDB(user_id);
-    var y = await isRec(user_id);
+    var x = await getHashedFromDB(email);
+    var y = await isRec(email);
     bcrypt.compare(password,x,(error,result)=>{
       if(error){
-        return {value:0,rec:-1,result:"Incorrect Password!"};
+        return {value:0,rec:-2,result:"Incorrect Password!"};
       }
       else{
         return {value:1,rec:y,result:"Logged In!"};
@@ -42,25 +42,64 @@ async function authenticate(user_id,password) {
   }
 }
 
-async function register(user_id,password) {
-  const values = [user_id];
+async function getnewuser_num(){
   try{
-      const res = await pool.query(
-          "SELECT encrypted_password FROM users WHERE id=$1",
-          values
-        );
-      console.log("Fetched from DB");
-      if(res.rowCount==0){
-        throw 1;
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_us;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_us = $1 where num_us = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
+
+async function register(user_name,email,password,rec_app) {
+  try{
+      var y = await authenticate(email,password);
+      if(!y.value){
+        if(y.rec===-2){
+          return {value:0,rec:-1,result:"User already exist!"};
+        }
       }
-      else{
-        return res.rows[0].encrypted_password;
-      }
-     
+      if(y.value){return {value:0,rec:-1,result:"User already exist!"};}
+      var z = await getnewuser_num();
+      bcrypt.hash(password, 10, function(err, hash) {
+        // Store hash in database here
+        const values = [z,user_name,email,hash,"","","",-1,rec_app];
+        const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, $8, $9);",values);
+        var data = {
+          "username": user_name,
+          "secret": hash,
+          "email": email,
+        };
+        
+        var config = {
+          method: 'post',
+          url: 'https://api.chatengine.io/users/',
+          headers: {
+            'PRIVATE-KEY': '{af9a2350-4099-4dea-8ed1-f034693292e2}'
+          },
+          data : data
+        };
+        
+        axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+        return {value:1,rec:rec_app,result:"Registered!"};
+      });
   }catch (error) {
       throw error;
   }
 }
+
+
+
 
 
 async function getUserInfo(user_id) {
@@ -333,11 +372,10 @@ async function getSemYearsForUser(user_id){
   }
 }
 
-async function isRec(id){
-  const values = [id];
-  console.log(id)
+async function isRec(email){
+  const values = [email];
   try {
-    const res = await pool.query("select applicant_or_recruiter from users where id=$1;",
+    const res = await pool.query("select applicant_or_recruiter from users where email=$1;",
     values);
     if(res.rowCount==0){
       throw 1;
