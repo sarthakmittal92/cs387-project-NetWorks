@@ -1,28 +1,28 @@
-import "./invitations_received.css"
+import "./jobs_applied.css"
 import { React, useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
 
-export const InvitationsReceived = () => {
+export const JobsApplied = () => {
 
     const [rows, setRows] = useState([]);
 
     const showToastMessage = (data, val) => {
         if (val) {
-            toast.success("invitations_received" + data, {
+            toast.success("jobs_applied" + data, {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
         else {
-            toast.error("invitations_received" + data, {
+            toast.error("jobs_applied" + data, {
                 position: toast.POSITION.TOP_RIGHT
             })
         }
     }
 
-    const handleRequest = (idx, acc) => e => {
-        const body = { sender: rows[idx], accept: acc };
-        console.log("invitations_received/handleRequest: " + body);
-        fetch('https://localhost:5001/Q4', {
+    const handleRequest = (idx) => e => {
+        const body = { job: rows[idx] };
+        console.log("jobs_applied/handleRequest: " + body);
+        fetch('https://localhost:5001/Q15', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -44,12 +44,12 @@ export const InvitationsReceived = () => {
                 }
             })
             .catch((err) => {
-                console.log("invitations_received/handleRequest: " + err.message);
+                console.log("jobs_applied/handleRequest: " + err.message);
             })
     }
 
     useEffect(() => {
-        fetch('http://localhost:5001/Q10', {
+        fetch('http://localhost:5001/Q16', {
             method: 'POST',
             headers: {
             'Content-type': 'application/json',
@@ -62,31 +62,31 @@ export const InvitationsReceived = () => {
             .then((dat) => {
                 if (dat.value) {
                     showToastMessage(dat, 1);
-                    setRows(dat.users);
+                    setRows(dat.jobs);
                 }
                 else {
                     showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
-            console.log("invitations_received/useEffect: " + err.message);
+            console.log("jobs_applied/useEffect: " + err.message);
             });
     }, [setRows]);
 
     return (
         <>
             <ToastContainer />
-            <div class="invitations-received">
+            <div class="jobs-applied">
                 <div class="caption">
-                    Invitations Received
-                    <table class="invitations-received">
+                    Jobs Applied
+                    <table class="jobs-applied">
                         <thead>
                             <tr>
                                 <th>
-                                    User
+                                    Job
                                 </th>
                                 <th>
-                                    Request
+                                    Application
                                 </th>
                             </tr>
                         </thead>
@@ -95,15 +95,10 @@ export const InvitationsReceived = () => {
                                 rows.map((item, idx) => (
                                     <tr key={idx}>
                                         <td>
-                                            @{item.username}
+                                            Job #{item.job_id}
                                         </td>
                                         <td>
-                                            <button class="request" onClick={handleRequest(idx,1)}>
-                                                Accept
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button class="cancel" onClick={handleRequest(idx,0)}>
+                                            <button class="cancel" onClick={handleRequest(idx)}>
                                                 Cancel
                                             </button>
                                         </td>

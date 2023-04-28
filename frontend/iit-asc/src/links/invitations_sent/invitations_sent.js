@@ -95,7 +95,7 @@ export const InvitationsSent = () => {
                                 rows.map((item, idx) => (
                                     <tr key={idx}>
                                         <td>
-                                            {item.username}
+                                            @{item.username}
                                         </td>
                                         <td>
                                             <button class="cancel" onClick={handleRequest(idx)}>
