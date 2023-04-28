@@ -5,7 +5,7 @@ import { Login } from './links/login/login'
 import { Landing } from './links/landing/Landing'
 import { Home } from './links/home/home'
 import { Chat } from './links/chat/chat'
-import Network from './links/network/network'
+import { Network } from './links/network/network'
 
 function App() {
   

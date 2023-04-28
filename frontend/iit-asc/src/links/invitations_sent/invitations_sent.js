@@ -1,5 +1,6 @@
 import "./invitations_sent.css"
 import { React, useState, useEffect } from 'react';
+import { ToastContainer, toast } from "react-toastify";
 
 export const InvitationsSent = () => {
 
@@ -74,6 +75,7 @@ export const InvitationsSent = () => {
 
     return (
         <>
+            <ToastContainer />
             <div class="invitations-sent">
                 <div class="caption">
                     Invitations Sent
