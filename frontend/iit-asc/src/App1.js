@@ -8,6 +8,7 @@ import { Chat } from './links/chat/chat'
 import { Network } from './links/network/network'
 import { Jobs } from './links/jobs/jobs'
 import { JobDetails } from './links/jobs_details/jobs_details'
+import { FillProfile } from './links/profile_fill/profile_fill'
 
 function App() {
   
@@ -20,6 +21,7 @@ function App() {
         <Route path='/network' element={<Network />}/>
         <Route path='/jobs' element={<Jobs />}/>
         <Route path='/jobs/details/:job_id' element={<JobDetails />}/>
+        <Route path='/fill-profile' element={<FillProfile />}/>
       </Routes>
   )
 }
