@@ -11,12 +11,12 @@ export const SearchNetwork = () => {
 
     const showToastMessage = (data, val) => {
         if (val) {
-            toast.success("search_network/redirect", {
+            toast.success("search_network/redirect" + data, {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
         else {
-            toast.error("search_network/redirect", {
+            toast.error("search_network/redirect" + data, {
                 position: toast.POSITION.TOP_RIGHT
             })
         }
@@ -48,18 +48,17 @@ export const SearchNetwork = () => {
                     dat.users.map((val, key) => (
                         temp[key] = {
                             id: val.username,
-                            name: val.username + " " + val.name
+                            name: val.username
                         }
                     ))
                     setItems(temp);
-                    console.log(temp);
                 }
                 else {
                     showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
-            console.log(err.message);
+            console.log("search_network: " + err.message);
             });
     }, [setItems])
 
@@ -91,7 +90,7 @@ export const SearchNetwork = () => {
     const formatResult = (item) => {
         return (
             <>
-                <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
+                <span style={{ display: 'block', textAlign: 'left' }}>{item.username}</span>
             </>
         )
     }

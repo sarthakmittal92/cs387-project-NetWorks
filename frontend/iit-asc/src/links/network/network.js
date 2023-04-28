@@ -6,7 +6,7 @@ import { InvitationsReceived } from "../invitations_received/invitations_receive
 import { InvitationsSent } from "../invitations_sent/invitations_sent";
 import { Connections } from "../connections/connections";
 
-const Network = () => {
+export const Network = () => {
     return (
         <>
             <div class="network">
@@ -25,5 +25,3 @@ const Network = () => {
         </>
     )
 }
-
-export default Network;
