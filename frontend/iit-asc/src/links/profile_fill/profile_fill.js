@@ -1,10 +1,10 @@
 import { React, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-
+import { useNavigate} from "react-router-dom";
 export const FillProfile = () => {
 
     const [edu, setEdu] = useState([]);
-
+    const navigate = useNavigate();
     // const handleRemove = (idx) => {
     //     const newList = edu;
     //     newList.splice(idx, 1);
@@ -251,8 +251,9 @@ export const FillProfile = () => {
                         <button type="submit">Submit</button>
                     </form>
                 </div>
-
+                        <div> <button onClick={()=>{navigate("/home",{replace:true})}} >Go to Home</button></div>
             </div>
+        
         </>
     );
 }

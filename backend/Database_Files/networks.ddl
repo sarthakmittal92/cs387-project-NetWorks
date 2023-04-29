@@ -117,6 +117,7 @@ CREATE TABLE job(
     company_desc VARCHAR(64) NOT NULL,
     job_desc VARCHAR(64) NOT NULL,
     launched_by INT NOT NULL,
+    is_open BOOLEAN NOT NULL,
     primary key (job_id)
 );
 

@@ -21,8 +21,8 @@ export const InvitationsReceived = () => {
 
     const handleRequest = (idx, acc) => e => {
         const body = { sender: rows[idx].user_id, accept: acc };
-        console.log("invitations_received/handleRequest: " + body);
-        fetch('https://localhost:5001/Q4', {
+        console.log("invitations_received/handleRequest: " + body.sender);
+        fetch('http://localhost:5001/Q4', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',

@@ -244,6 +244,61 @@ const createRestApi = app => {
             })();
     });
 
+    app.post('/Q31', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.deleteCreatedJob(req.session.userid, req.body.job_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q32', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getCreatedJobs(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q33', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getJobApplicants(req.body.job_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q34', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.amIRecruiterOrApplicant(req.session.userid);
+            if(x){
+                res.json({value:1, user_id:req.session.userid});
+            }
+            else{
+                res.json({value:0, user_id:req.session.userid});
+            }
+            
+            })();
+    });
+
+    app.post('/Q35', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.closeAJob(req.session.userid, req.body.job_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q36', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getUserInfo(req.session.userid, req.body.user_name);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q37', urlencodedParser, (req,res) => {
+        (async () => {
+            console.log(req.body);
+            var x = await database.changeConnectionState(req.session.userid, req.body.user_name, req.body.reqstring);
+            res.json(x);
+            })();
+    });
 
     app.post('/exist',urlencodedParser,(req,res)=>{
         if(req.session.userid){

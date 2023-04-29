@@ -9,10 +9,11 @@ import { Network } from './links/network/network'
 import { Jobs } from './links/jobs/jobs'
 import { JobDetails } from './links/jobs_details/jobs_details'
 import { FillProfile } from './links/profile_fill/profile_fill'
-
+import {Profile} from './links/profile/profile'
 import {Temp} from './links/temp/temp'
 import {OneFeed} from './links/one_feed/one_feed'
 import {Comment} from './links/comment/comment'
+import {NewJob} from'./links/jobs_new/jobs_new'
 
 function App() {
   
@@ -29,6 +30,8 @@ function App() {
         <Route path='/temp' element={<Temp />}/>
         <Route path='/of' element={<OneFeed />}/>
         <Route path='/cc' element={<Comment />}/>
+        <Route path='/profile/:user_name' element={<Profile />}/>
+        <Route path='/new-job' element={<NewJob/>}/>
       </Routes>
   )
 }

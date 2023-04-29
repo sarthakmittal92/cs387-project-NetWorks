@@ -1,12 +1,12 @@
 import "./connections.css"
 import { React, useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export const Connections = () => {
 
     const [rows, setRows] = useState([]);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const showToastMessage = (data, val) => {
         if (val) {
@@ -21,18 +21,18 @@ export const Connections = () => {
         }
     }
 
-    const handleChat = (idx) => {
-        console.log("connections/handleChat" + idx);
-        if (idx) {
-            showToastMessage(idx, 1);
-            navigate('/chat/' + rows[idx].username, {
-                replace: true
-            });
-        }
-        else {
-            showToastMessage(idx, 0);
-        }
-    }
+    // const handleChat = (idx) => {
+    //     console.log("connections/handleChat" + idx);
+    //     if (idx) {
+    //         showToastMessage(idx, 1);
+    //         navigate('/chat/' + rows[idx].username, {
+    //             replace: true
+    //         });
+    //     }
+    //     else {
+    //         showToastMessage(idx, 0);
+    //     }
+    // }
 
     useEffect(() => {
         fetch('http://localhost:5001/Q13', {
@@ -82,11 +82,6 @@ export const Connections = () => {
                                     <tr key={idx}>
                                         <td>
                                             {item.username}
-                                        </td>
-                                        <td>
-                                            <button class="request" onClick={handleChat(idx)}>
-                                                Message
-                                            </button>
                                         </td>
                                     </tr>
                                 ))

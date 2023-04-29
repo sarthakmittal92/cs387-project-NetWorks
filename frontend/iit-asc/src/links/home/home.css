@@ -16,19 +16,10 @@
     font-size: large;
     overflow-y: scroll;
     float: left;
+    border-radius: 1cm;
 }
 
-.pphoto{
-    margin-top:2cm;
-    margin-left: auto;
-    margin-right: auto;
-    height: 2cm;
-    width: 2cm;
-    border-radius: 50%;
-    border: 2px solid black;
-    background-image: url('1.png');
-    background-size:     cover; 
-}
+
 
 .desc{
     margin: 3%;

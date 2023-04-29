@@ -3,6 +3,8 @@ import React from "react";
 
 import { SearchJobs } from "../search_jobs/search_jobs";
 import { JobsApplied } from "../jobs_applied/jobs_applied";
+import { JobsCreated } from "../jobs_created/jobs_created";
+// import { JobsAccepted } from "../jobs_accepted/jobs_accepted";
 
 export const Jobs = () => {
     return (
@@ -15,6 +17,10 @@ export const Jobs = () => {
                 <SearchJobs />
                 <br />
                 <JobsApplied />
+                <br />
+                <JobsCreated />
+                {/* <br />
+                <JobsAccepted /> */}
             </div>
         </>
     )

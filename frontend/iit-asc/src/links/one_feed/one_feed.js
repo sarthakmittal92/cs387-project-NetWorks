@@ -20,9 +20,12 @@ export const OneFeed = (postid) => {
     const [likec,setlikec] = useState(0);
     const [commc,setcommc] = useState(0);
 
+    const [chan,setchang] = useState(0);
 
+    
 
     useEffect(()=>{
+        console.log("reached_here");
         (async () => {
             const dat = await fetch('http://localhost:5001/Q20', {
               method: 'POST',   
@@ -55,8 +58,25 @@ export const OneFeed = (postid) => {
     },[postid]);
 
     useEffect(()=>{
+        (async () => {
+            const dat = await fetch('http://localhost:5001/Q20', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+              body: JSON.stringify({
+                post_id:postid.postid
+            }),
+            }).then((response) => response.json());
+            setcommc(dat.comment_count);
+          })();
+    },[postid,chan,setchang])
 
-    },[isLoading]);
+    useEffect(()=>{
+        
+    },[isLoading,postid]);
 
     const handleLike = () => {
 
@@ -91,6 +111,10 @@ export const OneFeed = (postid) => {
         var div = document.getElementById(''+postid.postid);
         div.style.display = div.style.display === "none" ? "block" : "none";
     }
+    const hcchange = (e)=>{
+        console.log("tasty");
+        setchang(1);
+    }
 
     return(<>
 
@@ -106,7 +130,7 @@ export const OneFeed = (postid) => {
                         </div>
                         
                         <div className="feeduD">
-                        <a href="/" class="text-dark ">
+                        <a href={"/profile/"+powun} class="text-dark ">
                             <strong  class="x">{powun}<br/></strong>
                         </a>
                             <small >{ptime}</small>
@@ -150,7 +174,7 @@ export const OneFeed = (postid) => {
                     </div>
                 
                 </div>
-                <div class="card-body"  id={''+postid.postid}><Comment postid={postid.postid}/></div>
+                <div class="card-body"  id={''+postid.postid}><Comment value = {hcchange} postid={postid.postid}/></div>
             </div>
             }
     </>

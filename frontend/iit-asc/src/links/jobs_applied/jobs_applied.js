@@ -22,7 +22,7 @@ export const JobsApplied = () => {
     const handleRequest = (idx) => e => {
         const body = { job_id: rows[idx].job_id };
         console.log("jobs_applied/handleRequest: " + body);
-        fetch('https://localhost:5001/Q15', {
+        fetch('http://localhost:5001/Q15', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -95,12 +95,14 @@ export const JobsApplied = () => {
                                 rows.map((item, idx) => (
                                     <tr key={idx}>
                                         <td>
-                                            Job #{item.job_id}
+                                            Job :{item.company+" "+item.place_of_posting}
                                         </td>
-                                        <td>
+                                        <td>{
+                                            item.is_open &&
                                             <button class="cancel" onClick={handleRequest(idx)}>
                                                 Cancel
                                             </button>
+                                            }
                                         </td>
                                     </tr>
                                 ))

@@ -22,7 +22,7 @@ export const InvitationsSent = () => {
     const handleRequest = (idx) => e => {
         const body = { receiver: rows[idx].user_id };
         console.log("invitations_sent/handleRequest: " + body);
-        fetch('https://localhost:5001/Q11', {
+        fetch('http://localhost:5001/Q11', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',

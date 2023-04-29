@@ -3,10 +3,13 @@ import React, { useState,useEffect } from "react";
 import { Navbar} from '../navbar/navbar'
 import { Makepost} from '../makepost/makepost'
 import { OneFeed} from '../one_feed/one_feed'
+import { Smallprofile} from '../smallprofile/smallprofile'
+
 export const Home = () => {
     
     const [numfeed,setnumfeed] = useState(5);
     const [plist,setplist] = useState([]);
+    const [user_name,setuser_name] = useState('');
 
     useEffect(()=>{
         (async () => {
@@ -22,18 +25,34 @@ export const Home = () => {
             }),
             }).then((response) => response.json());
             setplist(dat.post_ids);
+            var div = document.getElementById("Load");
             console.log(dat,"Q19");
             if(dat.end){
-                var div = document.getElementById("Load");
                 div.style.display =  "none";
             }else{
-                var div = document.getElementById("Load");
                 div.style.display =  "block";
             }
             
           })();
         
     },[numfeed]);
+
+    useEffect(()=>{
+        (async () => {
+            const dat = await fetch('http://localhost:5001/Q8', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+              body: JSON.stringify({}),
+            }).then((response) => response.json());
+            setuser_name(dat.userName);
+            
+          })();
+    },[])
+
     const handleload =()=>{
         setnumfeed(numfeed+5);
     }
@@ -45,18 +64,7 @@ export const Home = () => {
                     <Navbar/> 
                 </div>
                 <div class = "profile">
-                    <div class="pphoto">
-                    </div>
-                    <div class="desc">
-                        profoverview<br/>
-                        dytufy
-                        profoverview<br/>
-                        profoverview<br/>
-                        profoverview<br/>
-                        profoverview<br/>
-                        profoverview<br/>
-                    </div>
-                
+                    <Smallprofile user_name={user_name}/>
                 </div>
                 <div class = "feed">
                     <div class = "mposts">

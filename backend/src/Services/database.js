@@ -24,7 +24,18 @@ async function getHashedFromDB(email) {
     console.log(error);
   }
 }
-
+async function amIRecruiterOrApplicant(user_id){
+  try {
+    const res = await pool.query(
+      "select applicant_or_recruiter from users where user_id=$1;",
+      [user_id]
+    );
+    return res.rows[0].applicant_or_recruiter;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
 async function isRecruiter(email){
   const values = [email];
   try {
@@ -226,7 +237,7 @@ async function acceptRequest(sender, receiver){
       values
     );
     if(res.rowCount==0){
-      return {value:0, result:"Invite doesn't exists!"};
+      return {value:-1, result:"Invite doesn't exists!"};
     }
     else{
       const resnew = await pool.query(
@@ -257,7 +268,7 @@ async function rejectRequest(sender, receiver){
       values
     );
     if(res.rowCount==0){
-      return {value:0, result:"Invite doesn't exists!"};
+      return {value:-1, result:"Invite doesn't exists!"};
     }
     else{
       const resnew = await pool.query(
@@ -405,7 +416,7 @@ async function deleteSentRequest(user_id, receiver_id){
   try {
     const check = await isInvitation(user_id, receiver_id);
     if(!check){
-      return {result:"No such invite exists"};
+      return {value:2, result:"No such invite exists"};
     }
     const values = [user_id, receiver_id];
     const res = await pool.query(
@@ -596,19 +607,19 @@ async function isInvitation(sender, receiver){
 async function sendRequest(sender, receiver){
   try {
     if(sender===receiver){
-      return {result:"Can't send request to self"};
+      return {value:2, result:"Can't send request to self"};
     }
     const check = await isConnection(sender, receiver);
     const anotherCheck = await isInvitation(sender, receiver);
     const anotherCheckAnotherCheck = await isInvitation(receiver, sender);
     if(check){
-      return {result:"Already a connection"};
+      return {value:3, result:"Already a connection"};
     }
     if(anotherCheck){
-      return {result:"Have already sent a request"};
+      return {value:4, result:"Have already sent a request"};
     }
     if(anotherCheckAnotherCheck){
-      return {result:"You have received a connection request from the receiver"};
+      return {value:5, result:"You have received a connection request from the receiver"};
     }
     const res = await pool.query(
       "insert into conn_invite values($1, $2);",
@@ -633,7 +644,7 @@ async function createJob(company, place_of_posting, deadline, full_part, skill_l
     var job_id = await getnewjob_num();
     const values = [job_id, company, place_of_posting, deadline, full_part, skill_level, company_desc, job_desc, launched_by];
     const res = await pool.query(
-      "insert into job values($1, $2, $3, current_timestamp, to_timestamp($4, 'DD Mon YYYY'), $5, $6, $7, $8, $9);",
+      "insert into job values($1, $2, $3, current_timestamp, to_timestamp($4, 'DD Mon YYYY'), $5, $6, $7, $8, $9, true);",
       values
     );
     return {value:1, result:"Successful"};
@@ -645,6 +656,13 @@ async function createJob(company, place_of_posting, deadline, full_part, skill_l
 
 async function applyToAJob(user_id, job_id){
   try {
+    const resnew = await pool.query(
+      "select current_timestamp<=deadline as check from job where job_id=$1;",
+      [job_id]
+    );
+    if(!resnew.rows[0].check){
+      return {value:0, result:"Deadline of this job is over!"};
+    }
     const res = await pool.query(
       "insert into application values($1,$2);",
       [job_id, user_id]
@@ -708,6 +726,243 @@ async function getUsernameAndProfilePhoto(user_id){
   }
 }
 
+async function getJobApplicants(job_id){
+  try {
+    const res = await pool.query(
+      "select username, user_id from users, application where application.applicant_id=users.user_id and job_id=$1;",
+      [job_id]
+    );
+    return {value:1, users:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, users:[]};
+  }
+}
+
+async function getCreatedJobs(user_id){
+  try {
+    const res = await pool.query(
+      "select * from job where launched_by=$1;",
+      [user_id]
+    );
+    return {value:1, jobs:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, jobs:[]};
+  }
+}
+
+async function deleteCreatedJob(user_id, job_id){
+  try {
+    const resnew = await pool.query(
+      "select is_open from job where launched_by=$1 and job_id=$2;",
+      [user_id, job_id]
+    );
+    if(!resnew.rows[0].is_open){
+      return {value:0, result:"The job was already closed!"};
+    }
+    const res = await pool.query(
+      "delete from job where job_id=$2 and launched_by=$1;",
+      [user_id, job_id]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function closeAJob(recruiter_id, job_id){
+  try {
+    const resnew = await pool.query(
+      "update job set is_open=false where launched_by=$1 and job_id=$2;",
+      [recruiter_id, job_id]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function getUserInfo(logged_in_user_id, required_page_user_name){
+  try {
+    const isrec = await amIRecruiterOrApplicant(logged_in_user_id);
+    const res1 = await pool.query(
+      "select user_id as required_page_user_id, username as user_name, email, place, photo as user_photo, description as desc from users where username like $1;",
+      [required_page_user_name]
+    );
+    console.log(res1.rows);
+    const required_page_user_id = res1.rows[0].required_page_user_id;
+    const urec = await amIRecruiterOrApplicant(required_page_user_id);
+    const res2 = await pool.query(
+      "select count(post_id) as num_posts from post where user_id=$1;",
+      [required_page_user_id]
+    );
+    const res3 = await pool.query(
+      "select count(user2) as num_conns from connection where user1=$1;",
+      [required_page_user_id]
+    );
+    var iscur = (required_page_user_id === logged_in_user_id);
+    const res4 = await pool.query(
+      "select position || ', ' || companyname || ' (' || TO_CHAR(start_time, 'YYYY/MM/DD') || ' to ' || TO_CHAR(end_time,'YYYY/MM/DD') || ')' as cur_work from work where user_id=$1 and position is not null;",
+      [required_page_user_id]
+    );
+    const res5 = await pool.query(
+      "select * from connection where user1=$1 and user2=$2;",
+      [required_page_user_id, logged_in_user_id]
+    );
+    var isconn;
+    var reqstring;
+    if(res5.rowCount===0){
+      isconn = false;
+      const res6 = await pool.query(
+        "select * from conn_invite where user1=$1 and user2=$2;",
+        [required_page_user_id, logged_in_user_id]
+      );
+      const res7 = await pool.query(
+        "select * from conn_invite where user1=$2 and user2=$1;",
+        [required_page_user_id, logged_in_user_id]
+      );
+      if(res6.rowCount===0 && res7.rowCount===0){
+        reqstring = "Connect";
+      }
+      else if(res6.rowCount!=0 && res7.rowCount===0){
+        reqstring = "Accept";
+      }
+      else if(res6.rowCount===0 && res7.rowCount!=0){
+        reqstring = "Cancel";
+      }
+    }
+    else{
+      isconn = true;
+      reqstring = "Connected";
+    }
+    var final = {};
+    final["isconn"] = isconn;
+    final["isrec"] = isrec;
+    final["urec"] = urec;
+    final["user_photo"] = res1.rows[0].user_photo;
+    final["user_name"] = res1.rows[0].user_name;
+    final["email"] = res1.rows[0].email;
+    if(res1.rows[0].desc==undefined){
+      final["desc"] = "No Description Added";
+    }
+    else{
+      final["desc"] = res1.rows[0].desc;
+    }
+    
+    if(res1.rows[0].place==undefined){
+      final["place"] = "No Place Added";
+    }
+    else{
+      final["place"] = res1.rows[0].place;
+    }
+    if(res4.rowCount===0){
+      final["cur_work"] = "No Work Added";
+    }
+    else if(res4.rows[0].cur_work==undefined){
+      final["cur_work"] = "No Work Added";
+    }
+    else{
+      final["cur_work"] = res4.rows[0].cur_work;
+    }
+    final["reqstring"] = reqstring;
+    final["total_post"] = res2.rows[0].num_posts;
+    final["total_conn"] = res3.rows[0].num_conns;
+    final["iscur"] = iscur;
+    final["value"] = 1;
+    return final;
+
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function changeConnectionState(logged_in_user_id, required_page_user_name, reqstring){
+  try {
+    var isconn;
+    var retstring;
+    var value;
+    const res1 = await pool.query(
+      "select user_id as required_page_user_id from users where username=$1;",
+      [required_page_user_name]
+    );
+    const required_page_user_id = res1.rows[0].required_page_user_id;
+    if(reqstring==="Cancel"){
+      var response = await deleteSentRequest(logged_in_user_id, required_page_user_id);
+      if(response.value!=0){
+        retstring = "Connect";
+        isconn = false;
+        value = 1;
+      }
+      else{
+        retstring = "Cancel";
+        isconn = false;
+        value = 0;
+      }
+    }
+    else if(reqstring==="Accept"){
+      var response = await acceptRequest(required_page_user_id, logged_in_user_id);
+      if(response.value===1){
+        retstring = "Connected";
+        isconn = true;
+        value = 1;
+      }
+      else if(response.value===-1){
+        retstring = "Connect";
+        isconn = false;
+        value = 1;
+      }
+      else{
+        retstring = "Accept";
+        isconn = false;
+        value = 0;
+      }
+    }
+    else if(reqstring==="Connect"){
+      var response = await sendRequest(logged_in_user_id, required_page_user_id);
+      if(response.value===5){
+        retstring = "Connected";
+        isconn = true;
+        value = 1;
+      }
+      else if(response.value===1){
+        retstring = "Cancel";
+        isconn = false;
+        value = 1;
+      }
+      else{
+        retstring = "Connect";
+        isconn = false;
+        value = 0;
+      }
+    }
+    else if(reqstring==="Reject"){
+      var response = await rejectRequest(required_page_user_id, logged_in_user_id);
+      if(response.value===1 || response.value===-1){
+        retstring = "Connect";
+        isconn = false;
+        value = 1;
+      }
+      else{
+        retstring = "Reject";
+        isconn = false;
+        value = 0;
+      }
+    }
+    var final = {};
+    final["isconn"] = isconn;
+    final["value"] = value;
+    final["reqstring"] = retstring;
+    return final;
+  } catch (error) {
+    console.log(error);
+    return {value:0};
+  }
+}
+
 module.exports = {
   authenticate,
   register,
@@ -744,4 +999,11 @@ module.exports = {
   addComment,
   getUsernameAndProfilePhoto,
   likeUnlikeAPost,
+  amIRecruiterOrApplicant,
+  getJobApplicants,
+  getCreatedJobs,
+  deleteCreatedJob,
+  closeAJob,
+  getUserInfo,
+  changeConnectionState,
 }; 
