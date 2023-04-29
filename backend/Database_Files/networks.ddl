@@ -48,6 +48,7 @@ CREATE TABLE comment(
     commenter_id INT NOT NULL,
     post_id INT NOT NULL,
     comment VARCHAR(64) NOT NULL,
+    comment_time TIMESTAMP NOT NULL,
     primary key(comment_id)
 );
 
@@ -56,6 +57,7 @@ CREATE TABLE post(
     user_id INT NOT NULL,
     photo VARCHAR(128),
     caption VARCHAR(64) NOT NULL,
+    post_time TIMESTAMP NOT NULL,
     primary key (post_id)
 );
 
@@ -118,8 +120,16 @@ CREATE TABLE job(
     primary key (job_id)
 );
 
-CREATE TABLE numusers(num_us INT);
-INSERT into numusers(num_us) values (0);
+CREATE TABLE numusers(
+    num_us INT,
+    num_edu INT,
+    num_job INT,
+    num_work INT,
+    num_post INT,
+    num_comment INT
+);
+
+INSERT into numusers values (0,0,0,0,0,0);
 
 ALTER TABLE users
     ADD CONSTRAINT fk_currentwork_id FOREIGN KEY (currentwork_id) REFERENCES work(work_id) 

@@ -25,7 +25,7 @@ async function getHashedFromDB(email) {
   }
 }
 
-async function isRec(email){
+async function isRecruiter(email){
   const values = [email];
   try {
     const res = await pool.query("select applicant_or_recruiter from users where email=$1;",
@@ -61,7 +61,7 @@ async function checkPassword(password,hash,y){
 async function authenticate(email,password) {
   try{
     var x = await getHashedFromDB(email);
-    var y = await isRec(email);
+    var y = await isRecruiter(email);
     console.log(x,y);
     if(x===""){
       return {value:0, rec:-4, result:"Incorrect Email_id!"};
@@ -87,9 +87,66 @@ async function getnewuser_num(){
     throw error;
   }
 }
+async function getnewedu_num(){
+  try{
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_edu;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_edu = $1 where num_edu = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
+async function getnewjob_num(){
+  try{
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_job;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_job = $1 where num_job = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
+async function getnewwork_num(){
+  try{
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_work;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_work = $1 where num_work = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
+async function getnewpost_num(){
+  try{
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_post;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_post = $1 where num_post = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
+
+async function getnewcomm_num(){
+  try{
+    const res = await pool.query("select * from numusers;");
+    var x = res.rows[0].num_comment;
+    value = [x+1,x];
+    const res_1 = await pool.query("UPDATE numusers SET num_comment = $1 where num_comment = $2;",value);
+    return x;
+  }catch(error){
+    throw error;
+  }
+}
 
 async function register(user_name,email,password,rec_app) {
   try{
+      console.log("HEHE I AM GAY")
       var y = await checkUser(email);
       console.log(y);
       if(y===1){
@@ -99,7 +156,7 @@ async function register(user_name,email,password,rec_app) {
       var z = await getnewuser_num();
       bcrypt.hash(password, 10, function(err, hash) {
         // Store hash in database here
-        const values = [z,user_name,email,hash,"","","",rec_app];
+        const values = [z,user_name,email,hash,"image-blank_photo.jpg","","",rec_app];
         const newres = pool.query("insert into users values($1, $2, $3, $4, $5, $6, $7, null, $8);",values);
         var data = {
           "username": user_name,
@@ -172,6 +229,10 @@ async function acceptRequest(sender, receiver){
       return {value:0, result:"Invite doesn't exists!"};
     }
     else{
+      const resnew = await pool.query(
+        "delete from conn_invite where user1=$1 and user2=$2;",
+        values
+      );
       const res1 = await pool.query(
         "INSERT INTO connection values($1,$2);",
         values
@@ -188,6 +249,30 @@ async function acceptRequest(sender, receiver){
     return {value:0, result:"Oops! An Error Occurred!"};
   }
 }
+async function rejectRequest(sender, receiver){
+  try {
+    const values = [sender, receiver];
+    const res = await pool.query(
+      "SELECT user1, user2 FROM conn_invite WHERE user1=$1 AND user2=$2;",
+      values
+    );
+    if(res.rowCount==0){
+      return {value:0, result:"Invite doesn't exists!"};
+    }
+    else{
+      const resnew = await pool.query(
+        "delete from conn_invite where user1=$1 and user2=$2;",
+        values
+      );
+      return {value:1, result:"Successful"};
+    }
+
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Oops! An Error Occurred!"};
+  }
+}
+
 
 async function checkUser(email){
   try {
@@ -214,304 +299,414 @@ async function saveImage(userid, filename){
       "UPDATE users SET photo=$2 WHERE user_id=$1;",
       values
     );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function getUsernamePassword(user_id){
+  const values = [user_id]
+  try {
+    const res = await pool.query(
+      "SELECT username, encrypted_password FROM users where user_id=$1;",
+      values
+    );
+    return {userName: res.rows[0].username, userSecret: res.rows[0].encrypted_password};
   } catch (error) {
     console.log(error);
   }
 }
 
-
-async function getUserInfo(user_id) {
-  const values = [user_id];
-  try{
-      const res = await pool.query(
-          "SELECT * FROM student WHERE id=$1",
-          values
-        );
-      console.log("Fetched User from DB");
-     return {name: res.rows[0].name, id: res.rows[0].id, dept_name: res.rows[0].dept_name, tot_cred: res.rows[0].tot_cred};
-  }catch (error) {
-      console.error(error);
-  }
-}
-async function getUserCourseInfo(user_id, sem, year) {
-  const values = [user_id, sem, year];
-  try{
-     const res = await pool.query(
-        "select * from takes where id=$1 and semester=$2 and year=$3;",
-        values
-     );
-     return res;
-     
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getAllUserCourses(user_id) {
-  const values = [user_id];
-  try{
+async function uploadPost(user_id, caption, body, filename){
+  try {
+    // console.log(user_id, caption, hashtags, filename);
+    var post_id = await getnewpost_num();
+    const values = [user_id, caption, filename, post_id];
     const res = await pool.query(
-      // "select distinct semester, year from takes where id=$1 order by year DESC, semester DESC;",
-      "select * from (select distinct semester, year from takes where id=$1) as sy(semester,year) order by year desc, (case when semester='Spring' then 1 when semester='Summer' then 2 when semester='Fall' then 3 when semester='Winter' then 4 end);",
+      "INSERT INTO post values($4, $1, $3, $2, current_timestamp);",
       values
     );
-
-    var final = [];
-
-    // for(let i=0;i<res.rowCount;i++){
-    //   final[res.rows[i].year]={};
-    // }
-
-    for(let i=0;i<res.rowCount;i++){
-      var x = await getUserCourseInfo(user_id, res.rows[i].semester, res.rows[i].year);
-      for(let j=0;j<x.rowCount;j++){
-        var temp = {};
-        temp['year']=res.rows[i].year;
-        temp['semester']=res.rows[i].semester;
-        temp['course_id'] = x.rows[j].course_id;
-        temp['sec_id'] = x.rows[j].sec_id;
-        temp['grade'] = x.rows[j].grade;
-        final.push(temp);
-      }
-      // (final[res.rows[i].year])[res.rows[i].semester]=x;
-    }
-    return final;
-     
-  }catch (error) {
-      console.error(error);
+    var valuesnew;
+    for(let i=0;i<body.hashtags;i++){
+      valuesnew = [post_id, body[''+i]];
+      const resnew = await pool.query(
+        "INSERT INTO hashtag_post values($1, $2);",
+        valuesnew
+      );
+    } 
+    return {value:1, result:"Posted"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
   }
 }
 
-async function getCurrentCourseInfo(course_id, semester, year) {
-  const values = [course_id, semester, year];
-  const valuenew=[course_id];
-  try{
-     const res = await pool.query("select distinct course_id, title, credits from course where course_id=$1;",
-     valuenew
-     );
-     var final = res.rows[0];
-     const insRes = await pool.query("select distinct id, name from teaches natural join instructor where course_id=$1 and semester=$2 and year=$3;",
-     values
-     );
-     if(insRes){
-      final['isinst']=1;
-      final['inst_count']=insRes.rowCount;
-      final['insts'] = insRes.rows;
-     }else{
-      final['isinst']=0;
-     }
-    const resnew = await pool.query("select distinct prereq.course_id, prereq_id, title from prereq, course where prereq.course_id=$1 and course.course_id=prereq.prereq_id;",
-    valuenew
-    );
-    if(resnew){
-      final['ispreq'] =1;
-      final['prereq_count']=resnew.rowCount;
-      final['prereqs'] = resnew.rows;
-    }else{
-      final['ispreq'] =0;
-    }
-    return final;
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getInstructorInfo(id, semester, year) {
-  console.log("I am the ID: ", id);
-  const values = [id];
-  const valuesnew = [id, semester, year];
-  try{
-     const res = await pool.query("select id, name, dept_name from instructor where id=$1",
-     values
-     );
-     var final = res.rows[0];
-     const currRes = await pool.query("select distinct course_id, title from teaches natural join course where id=$1 and semester=$2 and year=$3 order by course_id;",
-     valuesnew
-     );
-     final['current_course_count']= currRes.rowCount;
-    //  final['currCourses'] = Object.assign({}, currRes.rows);
-    final['currCourses'] = currRes.rows;
-
-    const OldCourse = await pool.query(
-    // "select course_id, title from teaches natural join course where id=$1 and (semester<>$2 or year<>$3) order by year desc, semester desc;",\
-    "select course_id, title from (select course_id, title, semester, year from teaches natural join course where id=$1 and (semester<>$2 or year<>$3)) as sy(course_id,title,semester,year) order by year desc, (case when semester='Spring' then 1 when semester='Summer' then 2 when semester='Fall' then 3 when semester='Winter' then 4 end);",
-    valuesnew
-    );
-    final['old_course_count']=OldCourse.rowCount;
-    final['oldCourses'] = OldCourse.rows;
-    return final;
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getCurrentCourses(sem, year) {
-  const values = [sem, year];
-  try{
-     const res = await pool.query(
-        "select distinct course_id, title, dept_name from course natural join section where semester=$1 and year=$2;",
-        values
-     );
-     return res.rows;
-     
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getInstructors() {
-  const values = [];
-  try{
-     const res = await pool.query(
-        "select id, name, dept_name from instructor",
-        values
-     );
-     return res.rows;
-     
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getDepartmentCourses(dept_name) {
-  const values = [dept_name];
-  try{
-     const res = await pool.query(
-        "select distinct course_id, title from course where dept_name=$1;",
-        values
-     );
-     return res.rows;
-     
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function getCurrentDepartmentCourses(dept_name, semester, year) {
-  const values = [dept_name, semester, year];
-  try{
-     const res = await pool.query(
-        "select distinct course_id, title from section natural join course where semester=$2 and year=$3 and dept_name=$1;",
-        values
-     );
-     return res.rows;
-     
-  }catch (error) {
-      console.error(error);
-  }
-}
-
-async function verifyPrereqForUser(user_id, course_id, sec_id) {
-  const values = [user_id, course_id];
-  const final = await getCurrentSemesterYear();
-  const valuesnew = [user_id, course_id, sec_id, final.semester, final.year];
+async function getProfilePhoto(user_id){
   try {
-    const res = await pool.query("(select prereq_id from prereq where prereq.course_id=$2) except (select course_id from takes where takes.id=$1 and grade is not null and grade<>'F');",
-      values);
-    if (res.rowCount!=0) {
+    const values = [user_id];
+    const res = await pool.query(
+      "SELECT photo FROM users where user_id=$1;",
+      values
+    );
+    if(res.rowCount!=0){
+      return {path:res.rows[0].photo};
+    }
+    else{
+      return {path:"Image not found!"};
+    }
+  } catch (error) {
+    console.log(error);
+    return {path:"An Error occurred!"};
+  }
+}
+
+async function getUserConnections(user_id){
+  try {
+    const values = [user_id];
+    const res = await pool.query(
+      "select username, user_id from users where user_id in (select user2 from connection where user1=$1);",
+      values
+    );
+    return {value:1, users:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, users:[]};
+  }
+}
+
+async function getAllJobs(){
+  try {
+    const res = await pool.query(
+      "select * from job");
+    return {value:1, jobs:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, jobs:[]};
+  }
+}
+
+async function userInvitationsReceived(user_id){
+  try {
+    const values = [user_id];
+    const res = await pool.query(
+      "SELECT username, user_id from users where user_id in (select user1 from conn_invite where user2=$1);",
+      values
+    );
+    return {value:1, users:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, users:[]};
+  }
+}
+
+async function deleteSentRequest(user_id, receiver_id){
+  try {
+    const check = await isInvitation(user_id, receiver_id);
+    if(!check){
+      return {result:"No such invite exists"};
+    }
+    const values = [user_id, receiver_id];
+    const res = await pool.query(
+      "DELETE FROM conn_invite where user1=$1 and user2=$2;",
+      values
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function userInvitationsSent(user_id){
+  try {
+    const values = [user_id];
+    const res = await pool.query(
+      "SELECT username, user_id from users where user_id in (select user2 from conn_invite where user1=$1);",
+      values
+    );
+    return {value:1, users:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, users:[]};
+  }
+}
+
+async function cancelJobApplication(user_id, job_id){
+  try {
+    const values = [user_id, job_id];
+    const res = await pool.query(
+      "delete from application where job_id=$2 and applicant_id=$1;",
+      values
+    );
+    return {value:1, result:"Successful"};
+  } 
+  catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function allAppliedJobs(user_id){
+  try {
+    const values = [user_id];
+    const res = await pool.query(
+      "select * from job natural join application where applicant_id=$1",
+      values
+    ); 
+    return {value:1, jobs:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, jobs:[]};
+  }
+}
+
+async function getAJob(job_id){
+  try {
+    const values = [job_id];
+    const res = await pool.query(
+      "select * from job where job_id=$1;",
+      values
+    );
+    return {value:1, job:[res.rows[0]]};
+  } catch (error) {
+    console.log(error);
+    return {value:0, jobs:[]};
+  }
+}
+
+async function updateProfile(user_id, place, desc){
+  try {
+    const values = [user_id, place, desc];
+    const res = await pool.query(
+      "UPDATE users SET place=$2, description=$3 where user_id=$1;",
+      values
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function uploadPostWithoutPhoto(user_id, caption, body){
+  try {
+    // console.log(user_id, caption, hashtags, filename);
+    var post_id = await getnewpost_num();
+    const values = [user_id, caption, post_id];
+    const res = await pool.query(
+      "INSERT INTO post values($3, $1, null, $2, current_timestamp);",
+      values
+    );
+    var valuesnew;
+    for(let i=0;i<body.hashtags.length;i++){
+      valuesnew = [post_id, body[''+i]];
+      const resnew = await pool.query(
+        "INSERT INTO hashtag_post values($1, $2);",
+        valuesnew
+      );
+    }
+    return {value:1, result:"Posted"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function getPostComments(post_id){
+  try {
+    const res = await pool.query(
+      "SELECT username as user_name, photo as user_photo, comment as user_comment, comment_id as id, CASE WHEN EXTRACT(EPOCH FROM (current_timestamp - comment_time)) < 60 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - comment_time))) || ' s' WHEN EXTRACT(EPOCH FROM (current_timestamp - comment_time)) < 3600 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - comment_time))/60) || ' m' WHEN EXTRACT(EPOCH FROM (current_timestamp - comment_time)) < 86400 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - comment_time))/3600) || ' h' WHEN EXTRACT(DAY FROM (current_timestamp - comment_time)) <= 30 THEN EXTRACT(DAY FROM (current_timestamp - comment_time)) || ' d' WHEN EXTRACT(MONTH FROM (current_timestamp - comment_time)) <= 12 THEN EXTRACT(MONTH FROM (current_timestamp - comment_time)) || ' mon' ELSE EXTRACT(YEAR FROM (current_timestamp - comment_time)) || ' y' END AS time FROM comment, users where post_id=$1 AND comment.commenter_id=users.user_id ORDER BY comment_time DESC;",
+      [post_id]
+    );
+    return {comments: res.rows, value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {comments:[], value:0, result:"Failed"};
+  }
+}
+
+async function getPostInfo(user_id, post_id){
+  try {
+    const res = await pool.query("select users.username as post_owner, users.photo as post_owner_photo, CASE WHEN EXTRACT(EPOCH FROM (current_timestamp - post_time)) < 60 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - post_time))) || ' s' WHEN EXTRACT(EPOCH FROM (current_timestamp - post_time)) < 3600 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - post_time))/60) || ' m' WHEN EXTRACT(EPOCH FROM (current_timestamp - post_time)) < 86400 THEN ROUND(EXTRACT(EPOCH FROM (current_timestamp - post_time))/3600) || ' h' WHEN EXTRACT(DAY FROM (current_timestamp - post_time)) <= 30 THEN EXTRACT(DAY FROM (current_timestamp - post_time)) || ' d' WHEN EXTRACT(MONTH FROM (current_timestamp - post_time)) <= 12 THEN EXTRACT(MONTH FROM (current_timestamp - post_time)) || ' mon' ELSE EXTRACT(YEAR FROM (current_timestamp - post_time)) || ' y' END AS post_time, post.photo is not null as bool_post_photo, post.photo as post_photo, post.caption as post_caption from users, post where post_id=$1 and post.user_id=users.user_id;",
+    [post_id]);
+    const resnew = await pool.query("select (select count(liker) as like_count from likes where post_id=$1), (select count(comment_id) as comment_count from comment where post_id=$1), (select $2 in (select liker from likes where post_id=$1) as i_like), (select string_agg(hashtag, ' ') as post_hashtags from hashtag_post where post_id=$1);",
+    [post_id, user_id]);
+    const final = Object.assign({}, res.rows[0], resnew.rows[0]);
+    return final;
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function getFeedPosts(num){
+  try {
+    const res = await pool.query(
+      "select post_id from post order by post_time desc limit $1",
+      [num]
+    );
+    const resnew = await pool.query("select post_id from post");
+    if(num>=resnew.rowCount){
+      return {end:true, post_ids:res.rows};
+    }
+    else{
+      return {end:false, post_ids:res.rows};
+    }
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+async function isConnection(user1, user2){
+  try {
+    const res = await pool.query(
+      "select * from connection where user1=$1 and user2=$2;",
+      [user1, user2]
+    );
+    if(res.rowCount!=0){
+      return true;
+    }
+    else{
       return false;
     }
-    else {
-      const checkRes = await pool.query("select * from takes where id=$1 and course_id=$2 and (grade<>'F' or grade is null);",
-        values);
-      if (checkRes.rowCount == 0) {
-        const timeRes = await pool.query("select time_slot_id from section where course_id=$2 and semester=$4 and year=$5 and sec_id=$3 except select time_slot_id from section natural join takes where semester=$4 and year=$5 and id=$1;",
-          valuesnew);
-        if(timeRes.rowCount!=0){
-          const newres = await pool.query("insert into takes(id,course_id,sec_id,semester,year,grade) values($1, $2, $3, $4, $5, null);",
-          valuesnew);
-          return true;
-        }
-        else{
-          return false;
-        }
-      }
-      else {
-        return false;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function getCurrentSemesterYear(){
-  values = []
-  try {
-    const res = await pool.query("select * from reg_dates where start_time<current_timestamp order by start_time desc;",
-    values);
-    final = {};
-    final['semester'] = res.rows[0].semester;
-    final['year'] = res.rows[0].year;
-    return final;
-
   } catch (error) {
     console.log(error);
+    return false;
   }
 }
-
-async function getSectionForCourse(course_id){
-  
-  try {
-    const final = await getCurrentSemesterYear();
-    values = [course_id, final.semester, final.year];
-    const res = await pool.query("select distinct sec_id from section where course_id=$1 and semester=$2 and year=$3;",
-    values);
-    return res.rows;
-
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function dropCourse(user_id, course_id ){
-  const final = await getCurrentSemesterYear();
-  const values = [user_id, course_id,final.semester, final.year];
-  try {
-    const res = await pool.query("delete from takes where id=$1 and course_id=$2 and semester=$3 and year=$4;",
-      values);
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getSemYearsForUser(user_id){
-  const values = [user_id];
+async function isInvitation(sender, receiver){
   try {
     const res = await pool.query(
-      //"select distinct semester, year from takes where id=$1 order by year DESC, semester DESC;",
-      "select * from (select distinct semester, year from takes where id=$1) as sy(semester,year) order by year desc, (case when semester='Spring' then 1 when semester='Summer' then 2 when semester='Fall' then 3 when semester='Winter' then 4 end);",
-      values
+      "select * from conn_invite where user1=$1 and user2=$2;",
+      [sender, receiver]
     );
-    return res.rows;
+    if(res.rowCount!=0){
+      return true;
+    }
+    else{
+      return false;
+    }
   } catch (error) {
     console.log(error);
+    return false;
   }
 }
-
-async function getAllStudents(){
-  const values = [];
+async function sendRequest(sender, receiver){
   try {
-    const res = await pool.query("select id, name, dept_name from student;",
-    values);
-    return res.rows;
+    if(sender===receiver){
+      return {result:"Can't send request to self"};
+    }
+    const check = await isConnection(sender, receiver);
+    const anotherCheck = await isInvitation(sender, receiver);
+    const anotherCheckAnotherCheck = await isInvitation(receiver, sender);
+    if(check){
+      return {result:"Already a connection"};
+    }
+    if(anotherCheck){
+      return {result:"Have already sent a request"};
+    }
+    if(anotherCheckAnotherCheck){
+      return {result:"You have received a connection request from the receiver"};
+    }
+    const res = await pool.query(
+      "insert into conn_invite values($1, $2);",
+      [sender, receiver]
+    );
+    return {value:1, result:"Successful"};
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+    return {value:0, result:"Failed"};
   }
 }
-
-async function getAlldeptname(){
-  const values = [];
+async function createJob(company, place_of_posting, deadline, full_part, skill_level, company_desc, job_desc, launched_by){
   try {
-    const res = await pool.query("select * from department;",
-    values);
-    return res.rows;
+    const checkValues = [launched_by];
+    const check = await pool.query(
+      "select applicant_or_recruiter from users where user_id=$1;",
+      checkValues
+    );
+    if(!check.rows[0].applicant_or_recruiter){
+      return {result:"Applicant can't create jobs!"};
+    }
+    var job_id = await getnewjob_num();
+    const values = [job_id, company, place_of_posting, deadline, full_part, skill_level, company_desc, job_desc, launched_by];
+    const res = await pool.query(
+      "insert into job values($1, $2, $3, current_timestamp, to_timestamp($4, 'DD Mon YYYY'), $5, $6, $7, $8, $9);",
+      values
+    );
+    return {value:1, result:"Successful"};
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+    return {value:0, result:"Failed"};
   }
 }
 
+async function applyToAJob(user_id, job_id){
+  try {
+    const res = await pool.query(
+      "insert into application values($1,$2);",
+      [job_id, user_id]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function addComment(user_id, post_id, comment){
+  try {
+    var comment_id = await getnewcomm_num();
+    const res = await pool.query(
+      "insert into comment values($1, $2, $3, $4, current_timestamp);",
+      [comment_id, user_id, post_id, comment]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function likeUnlikeAPost(user_id, post_id){
+  try {
+    const check = await pool.query(
+      "select $1 in (select liker from likes where post_id=$2) as check;",
+      [user_id, post_id]
+    );
+    if(check.rows[0].check){
+      //unlike
+      const res = await pool.query(
+        "delete from likes where liker=$1 and post_id=$2;",
+        [user_id, post_id]
+      );
+    }
+    else{
+      //like
+      const res = await pool.query(
+        "insert into likes values($1,$2);",
+        [user_id, post_id]
+      );
+    }
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function getUsernameAndProfilePhoto(user_id){
+  try {
+    const profilePhoto = await getProfilePhoto(user_id);
+    const username = await getUsernamePassword(user_id);
+    return {user_name: username.userName, profile_photo:profilePhoto.path};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"}; 
+  }
+}
 
 module.exports = {
   authenticate,
@@ -519,23 +714,34 @@ module.exports = {
   getUserID,
   getUserList,
   acceptRequest,
-  isRec,
+  isRecruiter,
   checkUser,
   saveImage,
-  
-  getUserInfo,
-  getAllUserCourses,
-  getCurrentCourseInfo,
-  getInstructorInfo,
-  getInstructors,
-  getCurrentCourses,
-  getDepartmentCourses,
-  getCurrentDepartmentCourses,
-  verifyPrereqForUser,
-  getCurrentSemesterYear,
-  getSectionForCourse,
-  dropCourse,
-  getSemYearsForUser,
-  getAllStudents,
-  getAlldeptname
-};
+  getUsernamePassword,
+  uploadPost,
+  getnewpost_num,
+  getUserConnections,
+  getProfilePhoto,
+  getAllJobs,
+  getPostInfo,
+  getPostComments,
+  userInvitationsReceived,
+  userInvitationsSent,
+  cancelJobApplication,
+  allAppliedJobs,
+  uploadPostWithoutPhoto,
+  getnewjob_num,
+  getnewwork_num,
+  getnewedu_num,
+  getFeedPosts,
+  sendRequest,
+  deleteSentRequest,
+  rejectRequest,
+  createJob,
+  getAJob,
+  applyToAJob,
+  updateProfile,
+  addComment,
+  getUsernameAndProfilePhoto,
+  likeUnlikeAPost,
+}; 

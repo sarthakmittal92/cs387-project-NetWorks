@@ -1,0 +1,9 @@
+.HashtagD{
+    overflow-y: scroll;
+    margin: 0.5%;
+    height: 2cm;
+    max-width: 100%;
+}
+.hcl{
+    list-style: none;
+}

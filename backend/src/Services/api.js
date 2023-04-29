@@ -31,10 +31,10 @@ const createRestApi = app => {
     app.post('/Q1',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.authenticate(req.body.email,req.body.password);
-            console.log(x);
             if(x.value){
                 session = req.session;
                 session.userid = await database.getUserID(req.body.email);
+                req.session.userid = session.userid;
             }
             res.json(x);
             })();
@@ -43,7 +43,6 @@ const createRestApi = app => {
     app.post('/Q2',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.register(req.body.user_name,req.body.email,req.body.password,req.body.rec_app);
-            console.log(x,"yo");
             res.json(x);
             })();
     });
@@ -57,8 +56,14 @@ const createRestApi = app => {
 
     app.post('/Q4',urlencodedParser, function (req, res) {
         (async () => {
-            var x = await database.acceptRequest(req.body.sender, req.body.receiver);
-            res.json(x);
+            if(req.body.accept===0){
+                var x = await database.rejectRequest(req.body.sender, req.session.userid);
+                res.json(x);
+            }
+            else{
+                var x = await database.acceptRequest(req.body.sender, req.session.userid);
+                res.json(x);
+            }
             })();
     });
 
@@ -73,14 +78,173 @@ const createRestApi = app => {
     
     app.post('/Q6', urlencodedParser, upload.single("image"), (req,res) => {
         (async () => {
-            console.log(req.file);
-            //const save = await saveImage(req.session.userid, req.file.filename);
-            var x = {result:"Successful"};
+            if(req.file.filename==undefined){
+                res.json({result:"Failed"});
+            }
+            else{
+                const save = await database.saveImage(req.session.userid, req.file.filename);
+                res.json({result:"Successful"});
+            }
+            })();
+    });
+
+    app.post('/Q7', urlencodedParser, upload.single("image"), (req,res) => {
+        (async () => {
+            var x = await database.uploadPost(req.session.userid, req.body.caption, req.body, req.file.filename);
             res.json(x);
             })();
     });
 
-    
+    app.post('/Q8', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getUsernamePassword(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q9', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getProfilePhoto(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q10', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.userInvitationsReceived(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q11', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.deleteSentRequest(req.session.userid, req.body.receiver);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q12', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.userInvitationsSent(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q13', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getUserConnections(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q14', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getAllJobs();
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q15', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.cancelJobApplication(req.session.userid, req.body.job_id);
+            res.json(x);
+            })();
+    }); 
+
+    app.post('/Q16', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.allAppliedJobs(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q17', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getAJob(req.body.job_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q18', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.updateProfile(req.session.userid, req.body.place, req.body.desc);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q19', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getFeedPosts(req.body.num_post);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q20', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getPostInfo(req.session.userid, req.body.post_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q21', urlencodedParser, (req,res) => {
+        (async () => {
+            // console.log(req,req.body,req.session.userid, req.body.caption, req.body['0'], req.file);
+            var x = await database.getPostComments(req.body.post_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q22', urlencodedParser, (req,res) => {
+        (async () => {
+            // console.log(req,req.body,req.session.userid, req.body.caption, req.body['0'], req.file);
+            var x = await database.uploadPostWithoutPhoto(req.session.userid, req.body.caption, req.body);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q23', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.sendRequest(req.session.userid, req.body.receiver);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q24', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.createJob(req.body.company, req.body.place_of_posting, req.body.deadline, req.body.full_part, req.body.skill_level, req.body.company_desc, req.body.job_desc, req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q25', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.applyToAJob(req.session.userid, req.body.job_id);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q29', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.addComment(req.session.userid, req.body.post_id, req.body.comment);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q28', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getUsernameAndProfilePhoto(req.session.userid);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q30', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.likeUnlikeAPost(req.session.userid, req.body.post_id);
+            res.json(x);
+            })();
+    });
+
+
     app.post('/exist',urlencodedParser,(req,res)=>{
         if(req.session.userid){
             res.json({value:1,inst:req.session.inst})
@@ -92,183 +256,6 @@ const createRestApi = app => {
     app.post('/IIS',urlencodedParser,auth_user,(req,res)=>{
         res.json({value:req.session.inst})
     })
-
-    app.post('/home',urlencodedParser,auth_user, function (req, res) {
-    (async () => {
-        var x = await database.getUserInfo(req.body.userid);
-        res.json(x);
-        })();
-    });
-
-     app.post('/hStudent',urlencodedParser,auth_user, function (req, res) {
-        (async () => {
-            var x = await database.getUserInfo(req.session.userid);
-            res.json(x);
-          })();
-     });
-
-    app.post("/hInstructor",urlencodedParser,auth_user, async (req, res) => {
-        try {
-           const instructor_id =  req.session.userid;
-           const curr = await database.getCurrentSemesterYear();
-            const insRes = await database.getInstructorInfo(instructor_id, curr.semester, curr.year);
-            res.json(insRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post('/homeCourseps',urlencodedParser,auth_user,function (req, res) {
-        (async () => {
-            var x = await database.getAllUserCourses(req.body.userid);
-            res.json(x);
-          })();
-     });
-
-     app.post('/homeCourse',urlencodedParser,auth_user,function (req, res) {
-        (async () => {
-            var x = await database.getAllUserCourses(req.session.userid);
-            res.json(x);
-          })();
-     });
-    
-    app.post("/course/:course_id",urlencodedParser,auth_user, async (req, res) => {
-        try {
-          const course_id  = req.body.course_id;
-          const curr = await database.getCurrentSemesterYear();
-          const courseRes = await database.getCurrentCourseInfo(course_id, curr.semester, curr.year);
-          res.json(courseRes);
-        } catch (err) {
-          console.error(err.message);
-        }
-      });
-
-    app.post("/instructor/:instructor_id",urlencodedParser,auth_user, async (req, res) => {
-    try {
-       const instructor_id =  req.body.instructor_id;
-       const curr = await database.getCurrentSemesterYear();
-        const insRes = await database.getInstructorInfo(instructor_id, curr.semester, curr.year);
-        res.json(insRes);
-    } catch (err) {
-        console.error(err.message);
-    }
-    });
-
-    app.post("/allinstructors",urlencodedParser,auth_user, async (req, res) => {
-        try {
-            const insRes = await database.getInstructors();
-            res.json(insRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/allcurrentcourses",urlencodedParser,auth_user, async (req, res) => {
-        try {
-            const curr = await database.getCurrentSemesterYear();
-            const courseRes = await database.getCurrentCourses(curr.semester, curr.year);
-            res.json(courseRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/alldept",urlencodedParser,auth_user, async (req, res) => {
-        try {
-            const courseRes = await database.getAlldeptname();
-            res.json(courseRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/alldeptcourses",urlencodedParser,auth_user, async (req, res) => {
-        const dept_id =  req.body.dept_id;
-        try {
-            const courseRes = await database.getDepartmentCourses(dept_id);
-            res.json(courseRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-
-    app.post("/alldeptcurcourses",urlencodedParser,auth_user, async (req, res) => {
-        const dept_id =  req.body.dept_id;
-        try {
-            const curr = await database.getCurrentSemesterYear();
-            const courseRes = await database.getCurrentDepartmentCourses(dept_id,curr.semester, curr.year);
-            res.json(courseRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/register",urlencodedParser,auth_user, async (req, res) => {
-        try {
-            const prereqRes = await database.verifyPrereqForUser(req.session.userid, req.body.course_id, req.body.sec_id);
-            res.json(prereqRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/sections",urlencodedParser,auth_user, async (req, res) => {
-        try {
-            const secRes = await database.getSectionForCourse(req.body.course_id);
-            res.json(secRes);
-        } catch (err) {
-            console.error(err.message);
-        }
-    });
-
-    app.post("/drop",urlencodedParser,auth_user, async(req, res)=>{
-        try {
-            const dropRes = await database.dropCourse(req.session.userid, req.body.course_id);
-            console.log(req.body,dropRes)
-            res.json(dropRes);
-        } catch (error) {
-            console.log(error.message);
-        }
-    });
-
-    app.post("/currentsemyear",urlencodedParser,auth_user, async(req, res)=>{
-        try {
-            const resp = await database.getCurrentSemesterYear();
-            res.json(resp);
-        } catch (error) {
-            console.log(error.message);
-        }
-    });    
-
-    app.post("/currusersemyears",urlencodedParser,auth_user, async(req, res)=>{
-        try {
-            const curRes = await database.getSemYearsForUser(req.session.userid);
-            res.json(curRes);
-        } catch (error) {
-            console.log(error.message);
-        }
-    });
-
-    app.post("/currusersemyearsps",urlencodedParser,auth_user, async(req, res)=>{
-        try {
-            const curRes = await database.getSemYearsForUser(req.body.userid);
-            res.json(curRes);
-        } catch (error) {
-            console.log(error.message);
-        }
-    });
-
-
-    app.post("/getstudents",urlencodedParser,auth_user, async(req, res)=>{
-        try {
-            const curRes = await database.getAllStudents();
-            res.json(curRes);
-        } catch (error) {
-            console.log(error.message);
-        }
-    });
-  
 };
 
 module.exports = {

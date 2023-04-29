@@ -98,37 +98,7 @@ export const Login  = ({ setAuth }) => {
                     showToastMessage(response.result,0); 
                   }
           })();
-          
-          // fetch('http://localhost:5001/Q2', {
-          //     method: 'POST',   
-          //     headers: {
-          //       'Content-type': 'application/json',
-          //     },
-          //     credentials:'include',
-          //     withCredentials:true,
-          //     body: JSON.stringify({
-          //       user_name: username,
-          //       email:email,
-          //       password: password,
-          //       rec_app: ra
-          //   }),
-          //   })
-          // .then((response) => response.json())
-          // .then((dat) => {
-          //   var json = JSON.parse(dat);
-          //   console.log(json.result);
-          //     if(dat.value){
-          //       showToastMessage(dat.result,1); 
-          //       var checkBox = document.getElementById("reg-log");
-          //       checkBox.checked = !checkBox.checked;
-          //     }
-          //     else{
-          //       showToastMessage(dat.result,0); 
-          //     }
-          // })
-          // .catch((err) => {
-          //   console.log(err.message);
-          // });
+         
         }
       }
 

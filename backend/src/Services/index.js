@@ -3,6 +3,7 @@ var cors = require('cors');
 const sessions = require('express-session');
 var app = express();
 app.use(express.static('public'));
+app.use('/uploads',express.static('uploads'))
 const {createRestApi} = require('./api.js');
 
 var port = 5001

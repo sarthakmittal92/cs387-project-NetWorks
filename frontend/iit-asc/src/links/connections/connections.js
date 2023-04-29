@@ -1,11 +1,99 @@
 import "./connections.css"
-import React from 'react';
+import { React, useState, useEffect } from 'react';
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const Connections = () => {
+
+    const [rows, setRows] = useState([]);
+    const navigate = useNavigate();
+
+    const showToastMessage = (data, val) => {
+        if (val) {
+            toast.success("connections" + data, {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+        else {
+            toast.error("connections" + data, {
+                position: toast.POSITION.TOP_RIGHT
+            })
+        }
+    }
+
+    const handleChat = (idx) => {
+        console.log("connections/handleChat" + idx);
+        if (idx) {
+            showToastMessage(idx, 1);
+            navigate('/chat/' + rows[idx].username, {
+                replace: true
+            });
+        }
+        else {
+            showToastMessage(idx, 0);
+        }
+    }
+
+    useEffect(() => {
+        fetch('http://localhost:5001/Q13', {
+            method: 'POST',
+            headers: {
+            'Content-type': 'application/json',
+            },
+            credentials:'include',
+            withCredentials:true,
+            body: JSON.stringify({}),
+        })
+            .then((response) => response.json())
+            .then((dat) => {
+                if (dat.value) {
+                    showToastMessage(dat, 1);
+                    setRows(dat.users);
+                }
+                else {
+                    showToastMessage(dat, 0);
+                }
+            })
+            .catch((err) => {
+            console.log("connections/useEffect: " + err.message);
+            });
+    }, [setRows]);
+
     return (
         <>
+            <ToastContainer />
             <div class="connections">
-                Connections
+                <div class="caption">
+                    Connections
+                    <table class="invitations-received">
+                        <thead>
+                            <tr>
+                                <th>
+                                    User
+                                </th>
+                                <th>
+                                    Chat
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                rows.map((item, idx) => (
+                                    <tr key={idx}>
+                                        <td>
+                                            {item.username}
+                                        </td>
+                                        <td>
+                                            <button class="request" onClick={handleChat(idx)}>
+                                                Message
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     );

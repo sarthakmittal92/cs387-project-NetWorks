@@ -1,0 +1,105 @@
+.feedimg{
+    width: 60px;
+    height:60px;
+    
+}
+.feedimgD{
+    height:60px;
+    width:60px;
+    border-radius: 50%;
+    /* border:1px solid black; */
+    overflow:hidden;
+    float: left;
+}
+.x{
+    margin-left:-45px;
+}
+.feeduD{
+    height:60px;
+    max-width: 100%;
+    margin-left: 70px;
+}
+.htag{
+    color: blue;
+}
+.caption{
+    color: black;
+}
+.CaptionF{
+    height:120px;
+    max-width: 100%;
+    padding: 2%;
+    overflow-y: scroll;
+}
+.postimg{
+    max-height:10cm;
+    max-width: 100%;
+}
+.postimgD{
+    max-height:10cm;
+    max-width: 100%;
+    overflow:hidden;
+}
+.like1{
+    width: 1cm;
+    height: 1cm;
+    border-radius: 50%;
+    background-image: url('1.jpg');
+    background-size: 100%;
+    box-shadow: 1px 1px 10px 2px rgb(1, 3, 18);
+}
+.like2{
+    width: 1cm;
+    height: 1cm;
+    border-radius: 50%;
+    background-image: url('2.jpg');
+    background-size: 100%;
+    box-shadow: 1px 1px 10px 2px rgb(1, 3, 18);
+}
+.likebutton{
+    float: left;
+
+}
+.comment{
+    position: absolute;
+    left:36%;
+    box-shadow: 1px 1px 20px 2px rgb(1, 3, 18);
+}
+.numh{
+    /* padding-top: 0.5cm;
+    margin-bottom: 0.5cm; */
+    margin-left: 0.5cm;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+.heart{
+    width: 1cm;
+    height: 1cm;
+    float: left;
+    border-radius: 50%;
+    background-image: url('6.jpg');
+    background-size: 100%;
+    box-shadow: 1px 1px 10px 2px rgb(1, 3, 18);
+}
+.numc{
+    /* padding-top: 0.5cm;
+    margin-bottom: 0.5cm; */
+    margin-left: 0.5cm;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+.commentph{
+    width: 1cm;
+    height: 1cm;
+    float: left;
+    border-radius: 50%;
+    background-image: url('8.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    box-shadow: 1px 1px 10px 2px rgb(1, 3, 18);
+}
+.card{
+    max-width: 15cm;
+}
