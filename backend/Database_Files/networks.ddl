@@ -16,6 +16,7 @@ CREATE TABLE users(
 CREATE TABLE application(
     job_id INT NOT NULL,
     applicant_id INT NOT NULL,
+    path VARCHAR(80) NOT NULL,
     primary key (job_id, applicant_id)
 );
 

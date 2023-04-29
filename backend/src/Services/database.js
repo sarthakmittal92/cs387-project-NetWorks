@@ -5,6 +5,7 @@ const data = fs.readFileSync('../config.txt',{encoding:'utf8', flag:'r'});
 console.log(JSON.parse(data))
 const pool = new Pool(JSON.parse(data));
 var axios = require('axios');
+const { start } = require("repl");
 
 async function getHashedFromDB(email) {
   const values = [email];
@@ -654,7 +655,7 @@ async function createJob(company, place_of_posting, deadline, full_part, skill_l
   }
 }
 
-async function applyToAJob(user_id, job_id){
+async function applyToAJob(user_id, job_id, filename){
   try {
     const resnew = await pool.query(
       "select current_timestamp<=deadline as check from job where job_id=$1;",
@@ -664,8 +665,8 @@ async function applyToAJob(user_id, job_id){
       return {value:0, result:"Deadline of this job is over!"};
     }
     const res = await pool.query(
-      "insert into application values($1,$2);",
-      [job_id, user_id]
+      "insert into application values($1,$2,$3);",
+      [job_id, user_id, filename]
     );
     return {value:1, result:"Successful"};
   } catch (error) {
@@ -729,7 +730,7 @@ async function getUsernameAndProfilePhoto(user_id){
 async function getJobApplicants(job_id){
   try {
     const res = await pool.query(
-      "select username, user_id from users, application where application.applicant_id=users.user_id and job_id=$1;",
+      "select username, user_id, path from users, application where application.applicant_id=users.user_id and job_id=$1;",
       [job_id]
     );
     return {value:1, users:res.rows};
@@ -963,6 +964,60 @@ async function changeConnectionState(logged_in_user_id, required_page_user_name,
   }
 }
 
+async function getAllHashtags(){
+  try {
+    const res = await pool.query(
+      "select hashtag from hashtag_post;"
+    );
+    return {hashtags:res.rows};
+
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Error Occurred while getting hashtags"};
+  }
+}
+
+async function getPostsOfHashtag(hashtag){
+  try {
+    const res = await pool.query(
+      "select post_id from hashtag_post where hashtag like $1;",
+      [hashtag]
+    );
+    return {post_ids:res.rows};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Error Occurred while getting Posts"};
+  }
+}
+
+async function updateWorkDetails(user_id, company, start_time, end_time, position){
+  try {
+    const work_id = await getnewwork_num();
+    const res = await pool.query(
+      "insert into work values($1,$2,$3,to_timestamp($4, 'DD Mon YYYY'), to_timestamp($5, 'DD Mon YYYY'), $6);",
+      [work_id, user_id, company, start_time, end_time, position]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
+async function updateEducationDetails(user_id, institutename, start_time, end_time){
+  try {
+    const edu_id = await getnewedu_num();
+    const res = await pool.query(
+      "insert into education values($1,$2,$3,to_timestamp($4, 'DD Mon YYYY'),to_timestamp($5, 'DD Mon YYYY'));",
+      [edu_id, user_id, institutename, start_time, end_time]
+    );
+    return {value:1, result:"Successful"};
+  } catch (error) {
+    console.log(error);
+    return {value:0, result:"Failed"};
+  }
+}
+
 module.exports = {
   authenticate,
   register,
@@ -1006,4 +1061,8 @@ module.exports = {
   closeAJob,
   getUserInfo,
   changeConnectionState,
+  getAllHashtags,
+  getPostsOfHashtag,
+  updateWorkDetails,
+  updateEducationDetails,
 }; 

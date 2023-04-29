@@ -216,9 +216,23 @@ const createRestApi = app => {
             })();
     });
 
-    app.post('/Q25', urlencodedParser, (req,res) => {
+    app.post('/Q25', urlencodedParser, upload.single("image"), (req,res) => {
         (async () => {
-            var x = await database.applyToAJob(req.session.userid, req.body.job_id);
+            var x = await database.applyToAJob(req.session.userid, req.body.job_id, req.file.filename);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q26', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.updateWorkDetails(req.session.userid, req.body.company, req.body.start_time, req.body.end_time, req.body.position);
+            res.json(x);
+            })();
+    });
+
+    app.post('/Q27', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.updateEducationDetails(req.session.userid, req.body.insti, req.body.start_time, req.body.end_time);
             res.json(x);
             })();
     });
@@ -294,23 +308,26 @@ const createRestApi = app => {
 
     app.post('/Q37', urlencodedParser, (req,res) => {
         (async () => {
-            console.log(req.body);
             var x = await database.changeConnectionState(req.session.userid, req.body.user_name, req.body.reqstring);
             res.json(x);
             })();
     });
 
-    app.post('/exist',urlencodedParser,(req,res)=>{
-        if(req.session.userid){
-            res.json({value:1,inst:req.session.inst})
-        }else{
-            res.json({value:0})
-        }
-    })
+    app.post('/Q38', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getAllHashtags();
+            res.json(x);
+            })();
+    });
 
-    app.post('/IIS',urlencodedParser,auth_user,(req,res)=>{
-        res.json({value:req.session.inst})
-    })
+    app.post('/Q39', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.getPostsOfHashtag(req.body.hashtag);
+            res.json(x);
+            })();
+    });
+
+
 };
 
 module.exports = {
