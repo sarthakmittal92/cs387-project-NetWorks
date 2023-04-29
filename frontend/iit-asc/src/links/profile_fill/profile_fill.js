@@ -5,6 +5,7 @@ export const FillProfile = () => {
 
     const [edu, setEdu] = useState([]);
     const navigate = useNavigate();
+    const [image, setImage] = useState([]);
     // const handleRemove = (idx) => {
     //     const newList = edu;
     //     newList.splice(idx, 1);
@@ -192,6 +193,28 @@ export const FillProfile = () => {
             showToastMessage(edu, 0);
         }
     }
+    const handlePhoto = (event)=>{
+        event.preventDefault();
+        (async () => {
+            const formData = new FormData();
+            formData.append("image",image);
+            if(!(image.length===0 || image===undefined)){
+                const dat = await fetch('http://localhost:5001/Q6', {
+                        method: 'POST',
+                        credentials:'include',
+                        withCredentials:true,
+                        body: formData,
+                    }).then((response) => response.json());
+                    if(dat.result==="Successful"){
+                        showToastMessage(dat.result,1); 
+                        navigate("/home");
+                    }
+                    else{
+                        showToastMessage(dat.result,0); 
+                    }
+            }
+        })();
+    }
 
     return (
         <>
@@ -249,6 +272,17 @@ export const FillProfile = () => {
                         }
                         <button onClick={(e) => { e.preventDefault(); handleAdd(); } }>Add education</button>
                         <button type="submit">Submit</button>
+                    </form>
+                </div>
+                <div>
+                    Upload Photo
+                    <form onSubmit={handlePhoto}>
+                        <div class = "form-field">
+                        <input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
+                        </div>
+                        <div class = "form-field">
+                        <button type="submit">Submit</button>
+                        </div>
                     </form>
                 </div>
                         <div> <button onClick={()=>{navigate("/home",{replace:true})}} >Go to Home</button></div>

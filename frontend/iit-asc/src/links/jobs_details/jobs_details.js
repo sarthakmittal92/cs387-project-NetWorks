@@ -10,6 +10,7 @@ export const JobDetails = () => {
     const [appls, setAppls] = useState([]);
     const [isRec, setRec] = useState(false);
     const [uid, setID] = useState(-1);
+    const [image, setImage] = useState([]);
 
     const navigate = useNavigate();
 
@@ -72,32 +73,28 @@ export const JobDetails = () => {
         return string;
     }
 
-    const handleApply = () => {
-        fetch('http://localhost:5001/Q25', {
-            method: 'POST',
-            headers: {
-            'Content-type': 'application/json',
-            },
-            credentials:'include',
-            withCredentials:true,
-            body: JSON.stringify({
-                job_id: job_id
-            }),
-        })
-            .then((response) => response.json())
-            .then((dat) => {
-                console.log(dat);
-                if (dat.value) {
-                    showToastMessage(dat, 1);
-                    navigate("/jobs",{replace:true});
-                }
-                else {
-                    showToastMessage(dat, 0);
-                }
-            })
-            .catch((err) => {
-            console.log("jobs_details/useEffect: " + err.message);
-            });
+    const handleApply = (event) => {
+        event.preventDefault();
+        (async () => {
+            const formData = new FormData();
+            formData.append("image",image);
+            formData.append("job_id",job_id);
+            if(!(image.length===0 || image===undefined)){
+                const dat = await fetch('http://localhost:5001/Q25', {
+                        method: 'POST',
+                        credentials:'include',
+                        withCredentials:true,
+                        body: formData,
+                    }).then((response) => response.json());
+                    if(dat.value){
+                        showToastMessage(dat.result,1); 
+                        navigate("/jobs");
+                    }
+                    else{
+                        showToastMessage(dat.result,0); 
+                    }
+            }
+        })();
     }
 
     // const handleAccept = (id) => {
@@ -133,9 +130,9 @@ export const JobDetails = () => {
     //     setAppls(newList);
     // }
 
-    const handleDownload = (path) => {
+    // const handleDownload = (path) => {
 
-    }
+    // }
 
     const handleClose = () => {
         fetch('http://localhost:5001/Q35', {
@@ -284,7 +281,14 @@ export const JobDetails = () => {
                                                 appls.map((item, idx) => (
                                                     <div key={idx}>
                                                         @{item.username}
-                                                        <button onClick={() => handleDownload(item.path)}>Resume</button>
+                                                        <button>
+                                                                <a
+                                                                href={"http://localhost:5001/uploads/"+item.path}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                >
+                                                                Resume
+                                                            </a></button>
                                                         <br />
                                                         {/* <button onClick={handleAccept(item.user_id)}>Accept</button>
                                                         <br /> */}
@@ -302,7 +306,16 @@ export const JobDetails = () => {
                             }
                             {
                                 getDateTime(item.deadline) && uid !== item.launched_by && item.is_open &&
-                                <button onClick={handleApply}>Apply</button>
+                                <div>
+                                    <form onSubmit={handleApply}>
+                                        <div class = "form-field">
+                                        <input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
+                                        </div>
+                                        <div class = "form-field">
+                                        <button type="submit">Apply</button>
+                                        </div>
+                                    </form>
+                                </div>
                             }
                         </div>
                     ))
