@@ -1,3 +1,4 @@
+import './jobs_new.css'
 import { React } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate} from "react-router-dom";
@@ -5,22 +6,30 @@ export const NewJob = () => {
     const navigate = useNavigate();
     const showToastMessage = (data, val) => {
         if (val) {
-            toast.success("profile_fill" + data, {
+            toast.success("jobs_new" + data, {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
         else {
-            toast.error("profile_fill" + data, {
+            toast.error("jobs_new" + data, {
                 position: toast.POSITION.TOP_RIGHT
             })
         }
     }
 
     const handleSubmit = (event) => {
+        event.preventDefault();
         console.log("jobs_new/handleSubmit: " + event.target);
         if (event.target) {
             showToastMessage(event.target, 1);
             const inputs = event.target;
+            var x = 1;
+            if (inputs.full.checked) {
+                x = 1;
+            }
+            else if (inputs.part.checked) {
+                x = 0;
+            }
             fetch('http://localhost:5001/Q24', {
                 method: 'POST',
                 headers: {
@@ -32,7 +41,7 @@ export const NewJob = () => {
                     company: inputs.comp.value,
                     place_of_posting: inputs.pop.value,
                     deadline: dateFormat(inputs.dead.value),
-                    full_part: inputs.full.value,
+                    full_part: x,
                     skill_level: inputs.skill.value,
                     company_desc: inputs.cdesc.value,
                     job_desc: inputs.jdesc.value
@@ -49,7 +58,7 @@ export const NewJob = () => {
                     }
                 })
                 .catch((err) => {
-                    console.log("profile_fill: " + err.message);
+                    console.log("jobs_new: " + err.message);
                 });
         }
         else {
@@ -104,34 +113,44 @@ export const NewJob = () => {
         <>
             <ToastContainer />
             <div class="new-job">
-                Fill in job details
-
-                <div>
-                    Job Details
-                    <form onSubmit={handleSubmit}>
-                        <br />
-                        <label>Company:</label>
-                        <input id="comp" type="text" />
-                        <br />
-                        <label>Place of posting:</label>
-                        <input id="pop" type="text" />
-                        <br />
-                        <label>Deadline:</label>
-                        <input id="dead" type="date" />
-                        <br />
-                        <label>Full time?:</label>
-                        <input id="full" type="radio" />
-                        <br />
-                        <label>Skill level:</label>
-                        <input id="skill" type="text" />
-                        <br />
-                        <label>Company Desc:</label>
-                        <input id="cdesc" type="text" />
-                        <br />
-                        <label>Job Desc:</label>
-                        <input id="jdesc" type="text" />
-                        <br />
-                        <button type="submit">Submit</button>
+                <div class="containersa">
+                    <h2 class="h2sa">Job Details</h2>
+                    <form class="center" onSubmit={handleSubmit}>
+                        <ul class="responsive-table">
+                            {/* <li class="table-header sa">
+                                <div class="col col-2">Field</div>
+                                <div class="col col-2">Input</div>
+                            </li> */}
+                            <li class="table-row sa">
+                                <div class="col col-2">Company</div>
+                                <div class="col col-2"><input id="comp" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Place of Posting</div>
+                                <div class="col col-2"><input id="pop" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Deadline</div>
+                                <div class="col col-2"><input id="dead" type="date" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Type</div>
+                                <div class="col col-2">Full-time:<input id="full" type="radio" /> Part-time:<input id="part" type="radio" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Skill Level</div>
+                                <div class="col col-2"><input id="skill" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Company Description</div>
+                                <div class="col col-2"><input id="cdesc" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Job Description</div>
+                                <div class="col col-2"><input id="jdesc" type="text" /></div>
+                            </li>
+                        </ul>
+                        <button class="button-7 center" type="submit">Post Job</button>
                     </form>
                 </div>
 

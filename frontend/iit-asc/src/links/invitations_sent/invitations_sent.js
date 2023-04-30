@@ -78,35 +78,27 @@ export const InvitationsSent = () => {
             <ToastContainer />
             <div class="invitations-sent">
                 <div class="caption">
-                    Invitations Sent
-                    <table class="invitations-sent">
-                        <thead>
-                            <tr>
-                                <th>
-                                    User
-                                </th>
-                                <th>
-                                    Request
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="containersa">
+                        <h2 class="h2sa">Invitations Sent</h2>
+                        <ul class="responsive-table">
+                            <li class="table-header sa">
+                                <div class="col col-2">Username</div>
+                                <div class="col col-2">Request</div>
+                            </li>
                             {
                                 rows.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td>
-                                            @{item.username}
-                                        </td>
-                                        <td>
-                                            <button class="cancel" onClick={handleRequest(idx)}>
-                                                Cancel
+                                    <li key={idx} class="table-row sa">
+                                        <div class="col col-2" data-label="Customer Name"><a href={"/profile/" + item.username}>{item.username}</a></div>
+                                        <div class="col col-2" data-label="Customer Name">
+                                            <button class="button-7" onClick={handleRequest(idx)}>
+                                            Cancel
                                             </button>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </li>
                                 ))
                             }
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

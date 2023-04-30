@@ -48,7 +48,7 @@ export const SearchJobs = () => {
                     dat.jobs.map((val, key) => (
                         temp[key] = {
                             id: val.job_id,
-                            name: val.job_id + val.company + val.place_of_posting + val.job_desc
+                            name: "#" + val.job_id + " " + val.company + " " + val.place_of_posting + " " + val.job_desc
                         }
                     ))
                     setItems(temp);
@@ -90,7 +90,7 @@ export const SearchJobs = () => {
     const formatResult = (item) => {
         return (
             <>
-                <span style={{ display: 'block', textAlign: 'left' }}>Job #{item.name}</span>
+                <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
             </>
         )
     }

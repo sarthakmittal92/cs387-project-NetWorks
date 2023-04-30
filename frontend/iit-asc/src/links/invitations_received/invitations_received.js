@@ -78,40 +78,32 @@ export const InvitationsReceived = () => {
             <ToastContainer />
             <div class="invitations-received">
                 <div class="caption">
-                    Invitations Received
-                    <table class="invitations-received">
-                        <thead>
-                            <tr>
-                                <th>
-                                    User
-                                </th>
-                                <th>
-                                    Request
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="containersa">
+                        <h2 class="h2sa">Invitations Received</h2>
+                        <ul class="responsive-table">
+                            <li class="table-header sa">
+                                <div class="col col-2">Username</div>
+                                <div class="col col-2">Request</div>
+                            </li>
                             {
                                 rows.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td>
-                                            @{item.username}
-                                        </td>
-                                        <td>
-                                            <button class="request" onClick={handleRequest(idx,1)}>
+                                    <li key={idx} class="table-row sa">
+                                        <div class="col col-2" data-label="Customer Name"><a href={"/profile/" + item.username}>{item.username}</a></div>
+                                        <div class="col col-2" data-label="Customer Name">
+                                            <button class="button-7" onClick={handleRequest(idx, 1)}>
                                                 Accept
                                             </button>
-                                        </td>
-                                        <td>
-                                            <button class="cancel" onClick={handleRequest(idx,0)}>
+                                        </div>
+                                        <div class="col col-2" data-label="Customer Name">
+                                            <button class="button-7" onClick={handleRequest(idx)}>
                                                 Cancel
                                             </button>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </li>
                                 ))
                             }
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

@@ -78,37 +78,30 @@ export const JobsApplied = () => {
             <ToastContainer />
             <div class="jobs-applied">
                 <div class="caption">
-                    Jobs Applied
-                    <table class="jobs-applied">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Job
-                                </th>
-                                <th>
-                                    Application
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="containersa">
+                        <h2 class="h2sa">Jobs Applied</h2>
+                        <ul class="responsive-table">
+                            <li class="table-header sa">
+                                <div class="col col-2">Job</div>
+                                <div class="col col-2">Application</div>
+                            </li>
                             {
                                 rows.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td>
-                                            Job :{item.company+" "+item.place_of_posting}
-                                        </td>
-                                        <td>{
+                                    <li key={idx} class="table-row sa">
+                                        <div class="col col-2" data-label="Customer Name"><a href={"/jobs/details/" + item.job_id}>Job ID: {item.job_id} Company: {item.company} Location: {item.place_of_posting}</a></div>
+                                        <div class="col col-2" data-label="Customer Name">
+                                            {
                                             item.is_open &&
-                                            <button class="cancel" onClick={handleRequest(idx)}>
+                                            <button class="button-7" onClick={handleRequest(idx)}>
                                                 Cancel
                                             </button>
                                             }
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </li>
                                 ))
                             }
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

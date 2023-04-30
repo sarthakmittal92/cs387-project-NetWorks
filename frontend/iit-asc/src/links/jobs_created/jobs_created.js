@@ -5,8 +5,8 @@ import { ToastContainer, toast } from "react-toastify";
 export const JobsCreated = () => {
 
     const [rows, setRows] = useState([]);
-    const [isRec, setRec] = useState(true);
-    const [uid, setID] = useState(0);
+    const [isRec, setRec] = useState(false);
+    const [uid, setID] = useState(-1);
 
     const showToastMessage = (data, val) => {
         if (val) {
@@ -108,40 +108,32 @@ export const JobsCreated = () => {
                     {
                         isRec &&
                         <div>
-                            Jobs Created
-                            <table class="jobs-created">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Job
-                                        </th>
-                                        <th>
-                                            Posting
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        rows.map((item, idx) => (
-                                            <tr key={idx}>
-                                                {
-                                                    isRec && uid === item.launched_by && item.is_open &&
-                                                    <div>
-                                                        <td>
-                                                            Job :{item.company+" "+item.place_of_posting}
-                                                        </td>
-                                                        <td>
-                                                            <button class="cancel" onClick={handleRequest(idx)}>
-                                                                Remove
-                                                            </button>
-                                                        </td>
-                                                    </div>
-                                                }
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </table>
+                                <div class="containersa">
+                                    <h2 class="h2sa">Jobs Created</h2>
+                                    <ul class="responsive-table">
+                                        <li class="table-header sa">
+                                            <div class="col col-2">Job</div>
+                                            <div class="col col-2">Application</div>
+                                        </li>
+                                        {
+                                            rows.map((item, idx) => (
+                                                <div key={idx} class="table-row sa">
+                                                    {
+                                                        isRec && uid === item.launched_by && item.is_open &&
+                                                        <li class="table-row sa">
+                                                                <div class="col col-2" data-label="Customer Name"><a href={"/jobs/details/" + item.job_id}>Job ID: {item.job_id} Company: {item.company} Location: {item.place_of_posting}</a></div>
+                                                            <div class="col col-2" data-label="Customer Name">
+                                                                <button class="button-7" onClick={handleRequest(idx)}>
+                                                                    Remove
+                                                                </button>
+                                                            </div>
+                                                        </li>        
+                                                    }
+                                                </div>
+                                            ))
+                                        }
+                                    </ul>
+                                </div>
                         </div>
                     }
                 </div>

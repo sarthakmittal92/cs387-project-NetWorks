@@ -64,30 +64,21 @@ export const Connections = () => {
             <ToastContainer />
             <div class="connections">
                 <div class="caption">
-                    Connections
-                    <table class="invitations-received">
-                        <thead>
-                            <tr>
-                                <th>
-                                    User
-                                </th>
-                                <th>
-                                    Chat
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="containersa">
+                        <h2 class="h2sa">Connections</h2>
+                        <ul class="responsive-table">
+                            <li class="table-header sa">
+                            <div class="col col-2">Username</div>
+                            </li>
                             {
                                 rows.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td>
-                                            {item.username}
-                                        </td>
-                                    </tr>
+                                    <li key={idx} class="table-row sa">
+                                        <div class="col col-2" data-label="Customer Name"><a href={"/profile/" + item.username}>{item.username}</a></div>
+                                    </li>
                                 ))
                             }
-                        </tbody>
-                    </table>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

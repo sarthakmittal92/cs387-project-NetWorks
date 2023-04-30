@@ -135,7 +135,8 @@ export const JobDetails = () => {
 
     // }
 
-    const handleClose = () => {
+    const handleClose = (event) => {
+        event.preventDefault();
         fetch('http://localhost:5001/Q35', {
             method: 'POST',
             headers: {
@@ -289,60 +290,86 @@ export const JobDetails = () => {
             <div class="job-details">
                 {
                     info.map((item, idx) => (
-                        <div key={idx}>
-                            Job #{item.job_id}
-                            <br />
-                            Company: {item.company}
-                            <br />
-                            Job desc: {item.job_desc}
-                            <br />
-                            Deadline: {dateFormat(item.deadline.split("T")[0])}
-                            <br />
-                            {
-                                isRec && uid === item.launched_by &&
-                                <div>
-                                        Applicants
-                                        <div>
-                                            {
-                                                appls.map((item, idx) => (
-                                                    <div key={idx}>
-                                                        @{item.username}
-                                                        <button>
-                                                                <a
-                                                                href={"http://localhost:5001/uploads/"+item.path}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                >
-                                                                Resume
-                                                            </a></button>
-                                                        <br />
-                                                        {/* <button onClick={handleAccept(item.user_id)}>Accept</button>
-                                                        <br /> */}
+                        <div key={idx} class="containersa">
+                            <h2 class="h2sa">Job Details</h2>
+                            <ul class="responsive-table">
+                                {/* <li class="table-header sa">
+                                    <div class="col col-2">Username</div>
+                                    <div class="col col-2">Request</div>
+                                </li> */}
+                                <li class="table-row sa">
+                                    <div class="col col-2" data-label="Customer Name">Job ID</div>
+                                    <div class="col col-2" data-label="Customer Name">
+                                        {item.job_id}
+                                    </div>
+                                </li>
+                                <li class="table-row sa">
+                                    <div class="col col-2" data-label="Customer Name">Company</div>
+                                    <div class="col col-2" data-label="Customer Name">
+                                        {item.company}
+                                    </div>
+                                </li>
+                                <li class="table-row sa">
+                                    <div class="col col-2" data-label="Customer Name">Job Description</div>
+                                    <div class="col col-2" data-label="Customer Name">
+                                        {item.job_desc}
+                                    </div>
+                                </li>
+                                <li class="table-row sa">
+                                    <div class="col col-2" data-label="Customer Name">Deadline</div>
+                                    <div class="col col-2" data-label="Customer Name">
+                                        {dateFormat(item.deadline.split("T")[0])}
+                                    </div>
+                                </li>
+                            </ul>
+                                {
+                                    isRec && uid === item.launched_by &&
+                                    <div class="containersa">
+                                        <h2 class="h2sa">Applicants</h2>
+                                        <ul class="responsive-table">
+                                        {
+                                            appls.map((item, idx) => (
+                                                <li key={idx} class="table-row sa">
+                                                    <div class="col col-2" data-label="Customer Name">@{item.username}</div>
+                                                    <div class="col col-2" data-label="Customer Name">
+                                                            <button class="button-7">
+                                                            <a
+                                                            href={"http://localhost:5001/uploads/"+item.path}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            >
+                                                            Resume
+                                                        </a></button>
                                                     </div>
-                                                ))
-                                            }
-                                        </div>
-                                        <br />
+                                                </li>
+                                            ))
+                                        }
+                                        </ul>
                                         {
                                             item.is_open &&
-                                            <button onClick={handleClose}>Close</button>
+                                            <button class="button-7" onClick={handleClose}>Close</button>
                                         }
-                                       
-                                </div>
-                            }
-                            {
-                                canApply && getDateTime(item.deadline) && uid !== item.launched_by && item.is_open &&
-                                <div>
-                                    <form onSubmit={handleApply}>
-                                        <div class = "form-field">
-                                        <input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
-                                        </div>
-                                        <div class = "form-field">
-                                        <button type="submit">Apply</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            }
+                                    </div>
+                                }
+                                {
+                                    canApply && getDateTime(item.deadline) && uid !== item.launched_by && item.is_open &&
+                                    <div>
+                                        <form class="center" onSubmit={handleApply}>
+                                            <ul class="responsive-table">
+                                                {/* <li class="table-header sa">
+                                                    <div class="col col-2">Field</div>
+                                                    <div class="col col-2">Input</div>
+                                                </li> */}
+                                                <li class="table-row sa">
+                                                    <div class="col col-2">Upload Resume</div>
+                                                    <div class="col col-2"><input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" /></div>
+                                                </li>
+                                            </ul>
+                                            <button class="button-7 center" type="submit">Apply</button>
+                                        </form>
+                                    </div>
+                                }
+
                         </div>
                     ))
                 }

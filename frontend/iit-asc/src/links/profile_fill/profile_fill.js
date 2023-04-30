@@ -220,72 +220,105 @@ export const FillProfile = () => {
         <>
             <ToastContainer />
             <div class="fill-profile">
-                Fill in profile details
 
-                <div>
-                    Personal Details
-                    <form onSubmit={handleSubmit}>
-                        <br />
-                        <label>Location:</label>
-                        <input id="loc" type="text" />
-                        <br />
-                        <label>Description:</label>
-                        <input id="desc" type="text" />
-                        <br />
-                        <button type="submit">Submit</button>
+                <div class="containersa">
+                    <h2 class="h2sa">Personal Details</h2>
+                    <form class="center" onSubmit={handleSubmit}>
+                        <ul class="responsive-table">
+                            {/* <li class="table-header sa">
+                                <div class="col col-2">Field</div>
+                                <div class="col col-2">Input</div>
+                            </li> */}
+                            <li class="table-row sa">
+                                <div class="col col-2">Location</div>
+                                <div class="col col-2"><input id="loc" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Description</div>
+                                <div class="col col-2"><input id="desc" type="text" /></div>
+                            </li>
+                        </ul>
+                        <button class="button-7 center" type="submit">Submit Personal Details</button>
                     </form>
                 </div>
 
-                <div>
-                    Work Details
-                    <form onSubmit={handleWork}>
-                        <label>Current work:</label>
-                        <input id="pos" type="text" />
-                        <br />
-                        <label>Company:</label>
-                        <input id="comp" type="text" />
-                        <br />
-                        <label>Start month:</label>
-                        <input id="st" type="date" />
-                        <br />
-                        <button type="submit">Submit</button>
+                <div class="containersa">
+                    <h2 class="h2sa">Upload Profile Photo</h2>
+                    <form class="center" onSubmit={handlePhoto}>
+                        <ul class="responsive-table">
+                            <li class="table-row sa">
+                                <div class="col col-2">Pick Photo</div>
+                                <div class="col col-2"><input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" /></div>
+                            </li>
+                        </ul>
+                        <button class="button-7 center" type="submit">Submit Profile Photo</button>
                     </form>
                 </div>
 
-                <div>
-                    Education Details
-                    <form onSubmit={handleEdu}>
+                <div class="containersa">
+                    <h2 class="h2sa">Work Details</h2>
+                    <form class="center" onSubmit={handleWork}>
+                        <ul class="responsive-table">
+                            {/* <li class="table-header sa">
+                                <div class="col col-2">Field</div>
+                                <div class="col col-2">Input</div>
+                            </li> */}
+                            <li class="table-row sa">
+                                <div class="col col-2">Current Work</div>
+                                <div class="col col-2"><input id="pos" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Company</div>
+                                <div class="col col-2"><input id="comp" type="text" /></div>
+                            </li>
+                            <li class="table-row sa">
+                                <div class="col col-2">Start Month</div>
+                                <div class="col col-2"><input id="st" type="date" /></div>
+                            </li>
+                        </ul>
+                        <button class="button-7 center" type="submit">Submit Work Details</button>
+                    </form>
+                </div>
+
+                <div class="containersa">
+                    <h2 class="h2sa">Education Details</h2>
+                    <form class="center" onSubmit={handleEdu}>
                         {
                             edu.map((item, idx) => (
-                                <div key={idx}>
-                                    <label>Institute:</label>
-                                    <input onChange={(e) => addInsti(idx,e.target.value)} id="insti" type="text" />
-                                    <br />
-                                    <label>Start month:</label>
-                                    <input onChange={(e) => addStartTime(idx,e.target.value)} id="st" type="date" />
-                                    <br />
-                                    <label>End month:</label>
-                                    <input onChange={(e) => addEndTime(idx,e.target.value)} id="et" type="date" />
-                                    <br />
-                                </div>
+                                <ul key={idx} class="responsive-table">
+                                    {/* <li class="table-header sa">
+                                        <div class="col col-2">Field</div>
+                                        <div class="col col-2">Input</div>
+                                    </li> */}
+                                    <li class="table-row sa">
+                                        <div class="col col-2">Institute</div>
+                                        <div class="col col-2"><input onChange={(e) => addInsti(idx,e.target.value)} id="insti" type="text" /></div>
+                                    </li>
+                                    <li class="table-row sa">
+                                        <div class="col col-2">Start Month</div>
+                                        <div class="col col-2"><input onChange={(e) => addStartTime(idx,e.target.value)} id="st" type="date" /></div>
+                                    </li>
+                                    <li class="table-row sa">
+                                        <div class="col col-2">End Month</div>
+                                        <div class="col col-2"><input onChange={(e) => addEndTime(idx,e.target.value)} id="et" type="date" /></div>
+                                    </li>
+                                </ul>
                             ))
                         }
-                        <button onClick={(e) => { e.preventDefault(); handleAdd(); } }>Add education</button>
-                        <button type="submit">Submit</button>
+                        <button class="button-7" onClick={(e) => { e.preventDefault(); handleAdd(); }}>Add education</button>
+                        <br /><br />
+                        <button class="button-7 center" type="submit">Submit Education Details</button>
                     </form>
                 </div>
-                <div>
-                    Upload Photo
-                    <form onSubmit={handlePhoto}>
-                        <div class = "form-field">
-                        <input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
-                        </div>
-                        <div class = "form-field">
-                        <button type="submit">Submit</button>
-                        </div>
-                    </form>
+                
+                <div class="containersa">
+                    <br />
+                    <button class="button-7 center" onClick={() => { navigate("/home", { replace: true }) }} >
+                        Go to Home
+                    </button>
+                    <br /><br /><br /><br /><br />
                 </div>
-                        <div> <button onClick={()=>{navigate("/home",{replace:true})}} >Go to Home</button></div>
+
             </div>
         
         </>
