@@ -1,15 +1,103 @@
 import "./home.css"
-import React, { useState,useEffect } from "react";
+import React, {useState,useEffect } from "react";
 import { Navbar} from '../navbar/navbar'
 import { Makepost} from '../makepost/makepost'
 import { OneFeed} from '../one_feed/one_feed'
 import { Smallprofile} from '../smallprofile/smallprofile'
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
 export const Home = () => {
     
     const [numfeed,setnumfeed] = useState(5);
     const [plist,setplist] = useState([]);
     const [user_name,setuser_name] = useState('');
+    const [end,setend] = useState(false);
+    const [items, setItems] = useState([]);
+    
+
+    useEffect(()=>{
+        (async () => {
+            const dat = await fetch('http://localhost:5001/Q38', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+              body: JSON.stringify({}),
+            }).then((response) => response.json());
+                    var temp = [];
+                    dat.hashtags.map((val, key) => (
+                        temp[key] = {
+                            id: key,
+                            name: val.hashtag
+                        }
+                    ))
+                    setItems(temp);
+          })();
+    },[])
+
+    const handleOnSearch = (string, results) => {
+        
+        if(string===""){
+            (async () => {
+            const dat = await fetch('http://localhost:5001/Q19', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+              body: JSON.stringify({
+                num_post:numfeed
+            }),
+            }).then((response) => response.json());
+            setplist(dat.post_ids);
+            setend(dat.end)
+            
+          })();}
+    }
+
+    const handleOnHover = (result) => {
+        console.log("search_jobs/handleOnHover: " + result);
+    }
+
+    const handleOnSelect = (item) => {
+        console.log("search_jobs/handleOnSelect" + item.name);
+        if (item) {
+            (async () => {
+                const dat = await fetch('http://localhost:5001/Q39', {
+                  method: 'POST',   
+                  headers: {
+                    'Content-type': 'application/json',
+                  },
+                  credentials:'include',
+                  withCredentials:true,
+                  body: JSON.stringify({hashtag:item.name}),
+                }).then((response) => response.json());
+                console.log(dat.post_ids);
+                setplist(dat.post_ids);
+                setend(true)
+              })();
+        }
+        else {
+            //showToastMessage(item, 0);
+            console.log("error");
+        }
+    }
+
+    const handleOnFocus = () => {
+        console.log("search_jobs/handleOnFocus");
+    }
+
+    const formatResult = (item) => {
+        return (
+            <>
+                <span style={{ display: 'block', textAlign: 'left' }}>{item.name}</span>
+            </>
+        )
+    }
+    
 
     useEffect(()=>{
         (async () => {
@@ -25,13 +113,7 @@ export const Home = () => {
             }),
             }).then((response) => response.json());
             setplist(dat.post_ids);
-            var div = document.getElementById("Load");
-            console.log(dat,"Q19");
-            if(dat.end){
-                div.style.display =  "none";
-            }else{
-                div.style.display =  "block";
-            }
+            setend(dat.end)
             
           })();
         
@@ -53,9 +135,22 @@ export const Home = () => {
           })();
     },[])
 
-    const handleload =()=>{
-        setnumfeed(numfeed+5);
-    }
+    // const handleload =()=>{
+    //     setnumfeed(numfeed+5);
+    // }
+    const handleScroll = (e) => {
+        
+        const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight+3;
+        // console.log(e.target.clientHeight,e.target.scrollHeight - e.target.scrollTop,e.target.scrollHeight, e.target.scrollTop);
+        
+        if (bottom) { 
+            if(!end){
+                setnumfeed(numfeed+5);
+            }
+            console.log('Reached bottom')
+        }
+        
+      }
 
     return(
         <>
@@ -70,7 +165,7 @@ export const Home = () => {
                     <div class = "mposts">
                         <Makepost/>
                     </div>
-                    <div class = "fposts">
+                    <div  onScroll={(e)=>{handleScroll(e)}} class = "fposts">
                             {plist.length!==0 && <ul className="cl">
                                     {plist.map((item) => (
                                         <li key={item.post_id}>
@@ -80,58 +175,20 @@ export const Home = () => {
                                 </ul>}
                               {plist.length===0 && <div>No post yet</div>}  
                     </div>
-                    <button id="Load" onClick={handleload}>Load More...</button>
                 </div>
                 <div class = "event">
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>event<br/>event<br/>event<br/>
-
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>event<br/>event<br/>event<br/>
-
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>
-                    event<br/>event<br/>
-
+                        <div class="hash-search">
+                        <div>Search hashtags here</div>
+                        <ReactSearchAutocomplete
+                            items={items}
+                            onSearch={handleOnSearch}
+                            onHover={handleOnHover}
+                            onSelect={handleOnSelect}
+                            onFocus={handleOnFocus}
+                            autoFocus
+                            formatResult={formatResult}
+                        />
+                    </div>
                 </div>
             </div>
         </>

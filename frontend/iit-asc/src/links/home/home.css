@@ -57,14 +57,18 @@
     overflow-y: scroll;
     padding-left: 2cm;
 }
+.fposts::-webkit-scrollbar {
+    display: none;
+  }
 .event{
     position: relative;
     margin: 0.5%;
     max-height: 75%;
     width: 20%;
-    border: 2px solid black;
+    margin-top: -2.5cm;
+    /* border: 2px solid black; */
     font-size: large;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     float: left;
     
 }

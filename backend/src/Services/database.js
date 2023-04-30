@@ -967,7 +967,7 @@ async function changeConnectionState(logged_in_user_id, required_page_user_name,
 async function getAllHashtags(){
   try {
     const res = await pool.query(
-      "select hashtag from hashtag_post;"
+      "select distinct hashtag from hashtag_post;"
     );
     return {hashtags:res.rows};
 
