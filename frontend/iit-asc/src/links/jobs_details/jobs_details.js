@@ -11,6 +11,7 @@ export const JobDetails = () => {
     const [isRec, setRec] = useState(false);
     const [uid, setID] = useState(-1);
     const [image, setImage] = useState([]);
+    const [canApply, setCanApply] = useState(false);
 
     const navigate = useNavigate();
 
@@ -216,6 +217,31 @@ export const JobDetails = () => {
                         .catch((err) => {
                         console.log("jobs_details/useEffect: " + err.message);
                         });
+        fetch('http://localhost:5001/Q40', {
+            method: 'POST',
+            headers: {
+            'Content-type': 'application/json',
+            },
+            credentials:'include',
+            withCredentials:true,
+            body: JSON.stringify({
+                job_id: job_id
+            }),
+        })
+            .then((response) => response.json())
+            .then((dat) => {
+                if (dat.value) {
+                    showToastMessage(dat, 1);
+                    setCanApply(false);
+                }
+                else {
+                    showToastMessage(dat, 0);
+                    setCanApply(true);
+                }
+            })
+            .catch((err) => {
+            console.log("jobs_details/handleCheck: " + err.message);
+            });
         (async () => {
             console.log("here");
             const dat = await fetch('http://localhost:5001/Q33', {
@@ -238,7 +264,7 @@ export const JobDetails = () => {
                     showToastMessage(dat, 0);
                 }
           })();
-    }, [job_id, setAppls, setInfo, setRec, setID])
+    }, [job_id, setCanApply, setAppls, setInfo, setRec, setID])
 
     function getDateTime (deadline) {
         const currentdate = new Date();
@@ -305,7 +331,7 @@ export const JobDetails = () => {
                                 </div>
                             }
                             {
-                                getDateTime(item.deadline) && uid !== item.launched_by && item.is_open &&
+                                canApply && getDateTime(item.deadline) && uid !== item.launched_by && item.is_open &&
                                 <div>
                                     <form onSubmit={handleApply}>
                                         <div class = "form-field">

@@ -327,6 +327,13 @@ const createRestApi = app => {
             })();
     });
 
+    app.post('/Q40', urlencodedParser, (req,res) => {
+        (async () => {
+            var x = await database.checkJobApplicants(req.body.job_id, req.session.userid);
+            res.json(x);
+            })();
+    });
+
 
 };
 

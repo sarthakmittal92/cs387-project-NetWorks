@@ -1018,6 +1018,22 @@ async function updateEducationDetails(user_id, institutename, start_time, end_ti
   }
 }
 
+async function checkJobApplicants(job_id, user_id){
+  try {
+    const res = await pool.query(
+      "select username, user_id, path from users, application where application.applicant_id=users.user_id and job_id=$1 and users.user_id=$2;",
+      [job_id, user_id]
+      );
+      if (res.rows.length !== 0) {
+          return { value: 1 };
+      }
+      return { value: 0 };
+  } catch (error) {
+    console.log(error);
+    return {value:0};
+  }
+}
+
 module.exports = {
   authenticate,
   register,
@@ -1065,4 +1081,5 @@ module.exports = {
   getPostsOfHashtag,
   updateWorkDetails,
   updateEducationDetails,
+  checkJobApplicants
 }; 
