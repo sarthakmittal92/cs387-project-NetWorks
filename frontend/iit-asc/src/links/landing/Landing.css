@@ -1,3 +1,27 @@
+.logo {
+    width: 25%;
+    height:60vh;
+    float: left;
+    background-color: black;
+}
+.intros {
+    width: 100%;
+    /* display:inline;  */
+    /* display: table-row; */
+}
+.detail {
+    width: 75%;
+    height: 60vh;
+}
+/* .fixed {
+    width: 25%
+}
+.flex-item {
+    flex-grow: 1;
+} */
+.space {
+    height: 2cm;
+}
 .lbody,html{
     margin: 0;
     padding: 0;
@@ -70,4 +94,145 @@
     {
         background-image: url(images/img1.jpg);
     }
+}
+
+.profilef2 {
+
+    max-height: 75%;
+    width: 100%;
+    /* border: 2px solid black; */
+    font-size: large;
+    float: left;
+    overflow-y: hidden;
+    text-align: center;
+}
+
+.profilef3 {
+
+    max-height: 75%;
+    width: 25%;
+    /* border: 2px solid black; */
+    font-size: large;
+    float: left;
+    /* margin-left: 100%; */
+    overflow-y: hidden;
+    text-align: center;
+    background-color:black;
+}
+
+.back2 {
+    width: 100%;
+    height: 2.5cm;
+    background-color: black;
+    /* border: 2px solid white; */
+}
+
+.back3 {
+    width: 100%;
+    height: 0.5cm;
+    background-color: black;
+    /* border: 2px solid white; */
+}
+
+.pphoto1 {
+    margin-left: 26%;
+    margin-top: -1cm;
+    height: 5cm;
+    width: 5cm;
+    border-radius: 50%;
+    border: 3px solid white;
+    overflow: hidden;
+}
+
+.pphoto2 {
+    margin-left: 35%;
+    margin-top: -1cm;
+    height: 3cm;
+    width: 3cm;
+    border-radius: 50%;
+    border: 3px solid white;
+    overflow: hidden;
+}
+
+.profilepphotos {
+    height: 2cm;
+    width: 2cm;
+}
+
+.pc {
+    margin-top: 0.3cm;
+    width: 100%;
+    height: 2cm;
+    color: black;
+}
+
+.pc1 {
+    width: 40%;
+    float: left;
+}
+
+.pc2 {
+    margin-left: 40%;
+    max-width: 100%;
+}
+
+.pn {
+    text-align: center;
+}
+
+.desc2 {
+    margin: 3%;
+    max-height: 100%;
+    max-width: 100%;
+    /* border: 2px solid black; */
+    font-size: large;
+    border-radius: 0.5cm;
+    padding: 1%;
+    padding-left: 2%;
+    text-align: center;
+}
+.btn2 {
+    border-radius: 4px;
+    height: 44px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+    padding: 0 30px;
+    letter-spacing: 1px;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
+    -ms-flex-pack: center;
+    text-align: center;
+    border: none;
+    background-color: #ffeba7;
+    color: #102770;
+    /* box-shadow: 0 8px 24px 0 rgba(255, 235, 167, .2); */
+}
+
+.btn2 {
+    /* box-shadow: 10px 10px 20px 6px rgb(1, 3, 18); */
+}
+
+.btn2:active,
+.btn2:focus {
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 10px 10px 20px 6px rgb(1, 3, 18);
+}
+
+.btn2:hover {
+    background-color: #c8ccdb;
+    color: #ffeba7;
+    box-shadow: 10px 10px 20px 6px rgb(1, 3, 18);
 }
