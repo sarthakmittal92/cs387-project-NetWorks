@@ -1,3 +1,9 @@
+.body{
+    background-image: url('b.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 .toolbar{
     margin: 0.5%;
     height: 2cm;
@@ -17,8 +23,12 @@
     overflow-y: scroll;
     float: left;
     border-radius: 1cm;
+    box-shadow: 1px 1px 20px 2px rgb(1, 3, 18);
 }
 
+.hash-search{
+   margin-top: 0.75cm;
+}
 
 
 .desc{
@@ -33,6 +43,7 @@
     margin: 0.5%;
     max-height: 100%;
     width: 40%;
+    margin-left: 4%;
     /* border: 2px solid black; */
     font-size: large;
     float: left;
@@ -41,10 +52,15 @@
 
 .mposts{
     margin: 2%;
-    height: 5.2cm;
+    height: 7cm;
     max-width: 100%;
     border: 2px solid black;
+    border-radius: 3%;
     font-size: large;
+    background-color: rgb(247, 222, 188);
+    box-shadow: 1px 1px 20px 2px rgb(1, 3, 18);
+
+    padding: 1%;
 }
 
 .fposts{
@@ -70,7 +86,23 @@
     font-size: large;
     /* overflow-y: scroll; */
     float: left;
+   
     
+}
+.gif{
+    position: relative;
+    margin: 2%;
+    margin-top: 4cm;
+    margin-left: -8.5%;
+    float: left;
+    height:4cm;
+    width: 25%;
+    background-image: url('giphy.gif');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border-radius: 2%;
+    box-shadow: 0.5px 0.5px 18px 1px rgb(1, 3, 18);
+    border: 2px solid rgb(0, 0, 0);
 }
 
 .home{
@@ -78,4 +110,8 @@
     overflow: hidden;
     height:100vh;
     /* border: 2px solid black; */
+    background-image: url('b.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }

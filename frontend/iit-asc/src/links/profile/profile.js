@@ -104,6 +104,9 @@ export const Profile = () => {
     const handlenavigate =()=>{
         navigate('/fill-profile',{replace:true});
     }
+    const handleCreate=()=>{
+        navigate('/new-job',{replace:true});
+    }
 
 
     return(
@@ -111,7 +114,7 @@ export const Profile = () => {
         { isLoading &&
             <div>Loading.. please wait!</div>
             }
-            { !isLoading && <div>
+            { !isLoading && <div class="compl">
                     <div>
                         <Navbar/>
                     </div>
@@ -132,20 +135,21 @@ export const Profile = () => {
                                             Edit profile
                                     </button>}
                                 </div>
+                            
+                            <div class=" about card-body p-4 text-black">
                             <div class="info" >
                                 <div class="d-flex datafo text-center py-1">
-                                    <div>
+                                    <div className="xyz">
                                         <p class="mb-1 h5">{total_post}</p>
                                         <p class="small text-muted mb-0">Posts</p>
                                     </div>
-                                    <div class="px-3">
+                                    <div class="px-3 xyz">
                                         <p class="mb-1 h5">{total_conn}</p>
                                         <p class="small text-muted mb-0">Connections</p>
                                     </div>
 
                                 </div>
                             </div>
-                            <div class=" about card-body p-4 text-black">
                                 <div class="mb-5">
                                 <p class="lead fw-normal mb-1">About</p>
                                     <div class="p-4" >
@@ -158,19 +162,19 @@ export const Profile = () => {
                                        {!urec && <p class="font-italic mb-1">Applicant</p>}
                                     </div>
                                     {!iscur && <div class="req">
-                                        {!isconn && <button type="button" onClick={handleclick} class="btn btn-outline-dark" data-mdb-ripple-color="dark">
+                                        {!isconn && <button type="button" onClick={handleclick} class="xyb btn btn-outline-dark" data-mdb-ripple-color="dark">
                                                     {reqstring}
                                             </button>}
-                                          {!isconn && reqstring==="accept" && <button type="button" onClick={handlereject} class="btn btn-outline-dark" data-mdb-ripple-color="dark">
+                                          {!isconn && reqstring==="Accept" && <button type="button" onClick={handlereject} class="xyb btn btn-outline-dark" data-mdb-ripple-color="dark">
                                                     Reject
                                             </button>
                                           }  
-                                         {isconn && <button type="button" class=" Displayed btn btn-outline-dark" data-mdb-ripple-color="dark">
+                                         {isconn && <button type="button" class="xyb  Displayed btn btn-outline-dark" data-mdb-ripple-color="dark">
                                                     Connected
                                             </button>}   
                                     </div>}
                                     {isrec && iscur && <div class="cjob">
-                                <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark">
+                                <button onClick={handleCreate} type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark">
                                            createjob
                                     </button>
                                     </div>}

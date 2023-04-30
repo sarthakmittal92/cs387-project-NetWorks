@@ -10,7 +10,9 @@
 .mydiv {
     width: 800px;
 }
-
+.a{
+    color: black;
+}
 .h2sa {
     font-size: 26px;
     margin: 20px 0;

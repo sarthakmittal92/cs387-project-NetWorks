@@ -121,7 +121,7 @@ export const JobsCreated = () => {
                                                     {
                                                         isRec && uid === item.launched_by && item.is_open &&
                                                         <li class="table-row sa">
-                                                                <div class="col col-2" data-label="Customer Name"><a href={"/jobs/details/" + item.job_id}>Job ID: {item.job_id} Company: {item.company} Location: {item.place_of_posting}</a></div>
+                                                                <div class="col col-2" data-label="Customer Name"><a class="a" href={"/jobs/details/" + item.job_id}>Job ID: {item.job_id} Company: {item.company} Location: {item.place_of_posting}</a></div>
                                                             <div class="col col-2" data-label="Customer Name">
                                                                 <button class="button-7" onClick={handleRequest(idx)}>
                                                                     Remove

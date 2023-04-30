@@ -7,7 +7,10 @@
 
 .network {
     position: relative;
-        overflow: hidden;
+        overflow-y: scroll;
         height: 100vh;
         /* border: 2px solid black; */
+}
+.a{
+    color: black;
 }

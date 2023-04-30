@@ -5,7 +5,7 @@ import { Makepost} from '../makepost/makepost'
 import { OneFeed} from '../one_feed/one_feed'
 import { Smallprofile} from '../smallprofile/smallprofile'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
-
+let count = 1;
 export const Home = () => {
     
     const [numfeed,setnumfeed] = useState(5);
@@ -13,6 +13,15 @@ export const Home = () => {
     const [user_name,setuser_name] = useState('');
     const [end,setend] = useState(false);
     const [items, setItems] = useState([]);
+
+    // const [ourText, setOurText] = useState("Hello Welcome to Networks")
+    const [firstVisit,setFirstVist] = useState(true);
+    
+
+    
+    useEffect(() => {
+        
+    },[]);
     
 
     useEffect(()=>{
@@ -131,9 +140,33 @@ export const Home = () => {
               body: JSON.stringify({}),
             }).then((response) => response.json());
             setuser_name(dat.userName);
-            
+            // setOurText("Hello "+dat.userName+" Welcome to Networks");
+            const timer =  setTimeout(() => {
+                // document.getElementById("bc").click();
+                speechHandler(dat.userName)
+            },1000);
+            return()=>clearTimeout(timer)
           })();
-    },[])
+    },[firstVisit])
+
+    function speechHandler (un) {
+        console.log("calling...");
+        console.log(count);
+        if(count===0){
+            const msg = new SpeechSynthesisUtterance()
+            
+            msg.text = "Hello "+un+" Welcome to Networks"
+            console.log(msg.text);
+            window.speechSynthesis.speak(msg)
+            setFirstVist(false)
+            count=count+1;
+        }
+    }
+    
+
+    
+
+    
 
     // const handleload =()=>{
     //     setnumfeed(numfeed+5);
@@ -177,19 +210,25 @@ export const Home = () => {
                     </div>
                 </div>
                 <div class = "event">
+                    <div class="gif">
+                    
+                    </div >
                         <div class="hash-search">
-                        <div>Search hashtags here</div>
+                        {/* <div cla>Search hashtags here</div> */}
                         <ReactSearchAutocomplete
                             items={items}
                             onSearch={handleOnSearch}
                             onHover={handleOnHover}
                             onSelect={handleOnSelect}
                             onFocus={handleOnFocus}
+                            placeholder="Search #HashTags"
                             autoFocus
                             formatResult={formatResult}
                         />
                     </div>
+                    
                 </div>
+               
             </div>
         </>
     )

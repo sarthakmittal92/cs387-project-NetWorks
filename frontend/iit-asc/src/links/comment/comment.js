@@ -61,10 +61,10 @@ export const Comment = ({value,postid}) =>  {
     const handleSubmit = ()=>{
         
         var c = document.getElementById("commentinput"+postid).value;
-        // document.getElementById("commentinput"+postid).value = "";
+        document.getElementById("commentinput"+postid).value = "";
         // var d = document.getElementById("cc"+postid).value;
         // document.getElementById("cc"+postid).value = ''+(parseInt(d, 10)+1);
-        console.log("from here");
+        if(c!==""){console.log("from here");
         (async () => {
             await fetch('http://localhost:5001/Q29', {
               method: 'POST',   
@@ -100,7 +100,7 @@ export const Comment = ({value,postid}) =>  {
                     setIsLoading(false);
                   })();
                 //   console.log(value.commc);     
-          })();
+          })();}
           
     }
     

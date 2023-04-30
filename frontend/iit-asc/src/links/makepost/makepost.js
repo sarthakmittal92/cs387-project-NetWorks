@@ -1,12 +1,12 @@
 import "./makepost.css"
-import React from "react";
+import React ,{useState}from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const Makepost = () => {
 
-    const [list, setList] = React.useState([]);
-    const [image, setImage] = React.useState([]);
+    const [list, setList] = useState([]);
+    const [image, setImage] = useState([]);
 
     const showToastMessage = (dat,val) => {
         if(val){
@@ -99,18 +99,18 @@ export const Makepost = () => {
             <>
                 <ToastContainer />
                 <div className="ACaption">
-                    <input type="text" name="caption" className="" placeholder="Write Caption" id="caption"/>
+                    <textarea rows="5" cols="60" type="text" name="caption" className="capi w3-input" placeholder="Write Caption" id="caption"/>
                 </div>
                 <div className="Hashtag">
                     <input type="text" name="hashtname" className="gh" placeholder="Add # here" id="hashtag" />
-                    <button type="button" onClick={handleAdd}> Add </button>
+                    <button type="button"class="btpost" onClick={handleAdd}> Add </button>
                     <div className="HashtagD">
                         <ul className="hcl">
                             {list.map((item) => (
-                                <li key={item.id}>
+                                <li class="hli" key={item.id}>
                                 <span>{item.id}</span>
-                                <button type="button" onClick={() => handleRemove(item.id)}>
-                                    X
+                                <button class=" bli" type="button" onClick={() => handleRemove(item.id)}>
+                                    remove
                                 </button>
                                 </li>
                             ))}
@@ -118,9 +118,9 @@ export const Makepost = () => {
                     </div>
                 </div>
                 <div>
-                       <div>         
-                        <input onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
-                        <input  onClick={handleSubmit} type = "submit" />
+                       <div className="fsb ">         
+                        <input  onChange={(e)=>{setImage(e.target.files[0])}} type = "file" id = "image" name = "image" multiple = "true" />
+                        <input className="btsub" onClick={handleSubmit} type = "submit" />
                         </div>
          
                 </div>               

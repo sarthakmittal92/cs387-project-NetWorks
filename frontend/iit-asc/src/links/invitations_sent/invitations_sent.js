@@ -88,7 +88,7 @@ export const InvitationsSent = () => {
                             {
                                 rows.map((item, idx) => (
                                     <li key={idx} class="table-row sa">
-                                        <div class="col col-2" data-label="Customer Name"><a href={"/profile/" + item.username}>{item.username}</a></div>
+                                        <div class="col col-2" data-label="Customer Name"><a class="a"href={"/profile/" + item.username}>{item.username}</a></div>
                                         <div class="col col-2" data-label="Customer Name">
                                             <button class="button-7" onClick={handleRequest(idx)}>
                                             Cancel

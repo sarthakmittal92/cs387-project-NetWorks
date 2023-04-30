@@ -18,30 +18,7 @@ export const Inststulogin = () => {
 
     useEffect(() => {
         const timer =  setTimeout(() => {
-            fetch('http://localhost:5001/exist', {
-            method: 'POST',   
-            headers: {
-              'Content-type': 'application/json',
-            },
-            credentials:'include',
-            withCredentials:true,
-          })
-        .then((response) => response.json())
-        .then((dat) => {
-          if(dat.value){
-            if(dat.inst){
-              setIsinst(true)
-            }else{
-              setIsinst(false)
-            } 
-            setIsLoading(false)
-          }else{
-            navigate('/login', {state:{ path: location.pathname }})
-          }
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+            
             
         },1000);
         return()=>clearTimeout(timer)
