@@ -1,7 +1,7 @@
 import "./search_jobs.css"
 import { React, useState, useEffect } from 'react';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const SearchJobs = () => {
@@ -9,18 +9,18 @@ export const SearchJobs = () => {
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("search_jobs/redirect" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("search_jobs/redirect" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("search_jobs/redirect" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("search_jobs/redirect" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     useEffect(() => {
         // var temp = [];
@@ -43,7 +43,7 @@ export const SearchJobs = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     var temp = [];
                     dat.jobs.map((val, key) => (
                         temp[key] = {
@@ -54,7 +54,7 @@ export const SearchJobs = () => {
                     setItems(temp);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
@@ -73,13 +73,13 @@ export const SearchJobs = () => {
     const handleOnSelect = (item) => {
         console.log("search_jobs/handleOnSelect" + item);
         if (item) {
-            showToastMessage(item, 1);
+            // showToastMessage(item, 1);
             navigate('/jobs/details/' + item.id, {
                 replace: true
             });
         }
         else {
-            showToastMessage(item, 0);
+            // showToastMessage(item, 0);
         }
     }
 

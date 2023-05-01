@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import { useParams } from 'react-router-dom';
 import { useNavigate} from "react-router-dom";
 export const JobDetails = () => {
@@ -15,18 +15,18 @@ export const JobDetails = () => {
 
     const navigate = useNavigate();
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("jobs_details" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("jobs_details" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("jobs_details" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("jobs_details" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     useEffect(() => {
         
@@ -88,11 +88,11 @@ export const JobDetails = () => {
                         body: formData,
                     }).then((response) => response.json());
                     if(dat.value){
-                        showToastMessage(dat.result,1); 
+                        // showToastMessage(dat.result,1); 
                         navigate("/jobs");
                     }
                     else{
-                        showToastMessage(dat.result,0); 
+                        // showToastMessage(dat.result,0); 
                     }
             }
         })();
@@ -151,11 +151,11 @@ export const JobDetails = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     navigate("/jobs",{replace:true});
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
@@ -178,14 +178,14 @@ export const JobDetails = () => {
             .then((dat) => {
                 console.log(dat);
                 if (dat.value) {
-                    showToastMessage(dat.user_id, 1);
+                    // showToastMessage(dat.user_id, 1);
                     setRec(true);
                     setID(dat.user_id);
                     console.log(dat.user_id,"chhc");
                 }
                 else {
                     console.log(dat.user_id);
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                     setRec(false);
                     setID(dat.user_id);
                 };
@@ -207,12 +207,12 @@ export const JobDetails = () => {
                         .then((response) => response.json())
                         .then((dat) => {
                             if (dat.value) {
-                                showToastMessage(dat, 1);
+                                // showToastMessage(dat, 1);
                                 setInfo(dat.job);
                                 console.log(dat.job[0].deadline);
                             }
                             else {
-                                showToastMessage(dat, 0);
+                                // showToastMessage(dat, 0);
                             }
                         })
                         .catch((err) => {
@@ -232,11 +232,11 @@ export const JobDetails = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     setCanApply(false);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                     setCanApply(true);
                 }
             })
@@ -262,7 +262,7 @@ export const JobDetails = () => {
                     setAppls(dat.users);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
           })();
     }, [job_id, setCanApply, setAppls, setInfo, setRec, setID])

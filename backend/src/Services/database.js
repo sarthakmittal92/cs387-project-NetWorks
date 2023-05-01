@@ -513,7 +513,8 @@ async function uploadPostWithoutPhoto(user_id, caption, body){
     );
     var valuesnew;
     for(let i=0;i<body.hashtags.length;i++){
-      valuesnew = [post_id, body[''+i]];
+      console.log(body.hashtags);
+      valuesnew = [post_id, body.hashtags[i].id];
       const resnew = await pool.query(
         "INSERT INTO hashtag_post values($1, $2);",
         valuesnew
@@ -522,7 +523,7 @@ async function uploadPostWithoutPhoto(user_id, caption, body){
     return {value:1, result:"Posted"};
   } catch (error) {
     console.log(error);
-    return {value:0, result:"Failed"};
+    return {value:0, result:"Failed!! Try again"};
   }
 }
 
@@ -806,7 +807,7 @@ async function getUserInfo(logged_in_user_id, required_page_user_name){
     );
     var iscur = (required_page_user_id === logged_in_user_id);
     const res4 = await pool.query(
-      "select position || ', ' || companyname || ' (' || TO_CHAR(start_time, 'YYYY/MM/DD') || ' to ' || TO_CHAR(end_time,'YYYY/MM/DD') || ')' as cur_work from work where user_id=$1 and position is not null;",
+      "select position || ', ' || companyname || ' (' || TO_CHAR(start_time, 'YYYY/MM/DD') || ' to present' || ')' as cur_work from work where user_id=$1 and position is not null;",
       [required_page_user_id]
     );
     const res5 = await pool.query(
@@ -990,12 +991,12 @@ async function getPostsOfHashtag(hashtag){
   }
 }
 
-async function updateWorkDetails(user_id, company, start_time, end_time, position){
+async function updateWorkDetails(user_id, company, start_time, position){
   try {
     const work_id = await getnewwork_num();
     const res = await pool.query(
-      "insert into work values($1,$2,$3,to_timestamp($4, 'DD Mon YYYY'), to_timestamp($5, 'DD Mon YYYY'), $6);",
-      [work_id, user_id, company, start_time, end_time, position]
+      "insert into work values($1,$2,$3,to_timestamp($4, 'DD Mon YYYY'), current_timestamp, $5);",
+      [work_id, user_id, company, start_time, position]
     );
     return {value:1, result:"Successful"};
   } catch (error) {
@@ -1006,6 +1007,7 @@ async function updateWorkDetails(user_id, company, start_time, end_time, positio
 
 async function updateEducationDetails(user_id, institutename, start_time, end_time){
   try {
+    console.log(institutename, start_time, end_time);
     const edu_id = await getnewedu_num();
     const res = await pool.query(
       "insert into education values($1,$2,$3,to_timestamp($4, 'DD Mon YYYY'),to_timestamp($5, 'DD Mon YYYY'));",

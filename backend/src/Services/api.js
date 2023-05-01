@@ -28,6 +28,16 @@ const createRestApi = app => {
         }
     }
 
+    app.post('/Q0',urlencodedParser, function (req, res) {
+        (async () => {
+            if(req.session.userid>=0){
+                res.json({val:true});
+            }else{
+                res.json({val:false});
+            }
+            })();
+    });
+
     app.post('/Q1',urlencodedParser, function (req, res) {
         (async () => {
             var x = await database.authenticate(req.body.email,req.body.password);
@@ -225,7 +235,7 @@ const createRestApi = app => {
 
     app.post('/Q26', urlencodedParser, (req,res) => {
         (async () => {
-            var x = await database.updateWorkDetails(req.session.userid, req.body.company, req.body.start_time, req.body.end_time, req.body.position);
+            var x = await database.updateWorkDetails(req.session.userid, req.body.company, req.body.start_time, req.body.position);
             res.json(x);
             })();
     });

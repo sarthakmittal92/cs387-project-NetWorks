@@ -47,7 +47,7 @@ export const Makepost = () => {
             var caption = document.getElementById("caption").value;
             const formData = new FormData();
             if(image.length===0 || image===undefined){
-                console.log(image,"you are right");
+                console.log(image,"you are right",list);
                 const dat = await fetch('http://localhost:5001/Q22', {
                 method: 'POST',
                 headers: {

@@ -1,27 +1,27 @@
 import './jobs_new.css'
 import { React } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import { useNavigate} from "react-router-dom";
 export const NewJob = () => {
     const navigate = useNavigate();
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("jobs_new" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("jobs_new" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("jobs_new" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("jobs_new" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("jobs_new/handleSubmit: " + event.target);
         if (event.target) {
-            showToastMessage(event.target, 1);
+            // showToastMessage(event.target, 1);
             const inputs = event.target;
             var x = 1;
             if (inputs.full.checked) {
@@ -50,11 +50,11 @@ export const NewJob = () => {
                 .then((response) => response.json())
                 .then((dat) => {
                     if (dat.value) {
-                        showToastMessage(dat, 1);
+                        // showToastMessage(dat, 1);
                         navigate('/jobs', { replace: true });
                     }
                     else {
-                        showToastMessage(dat, 0);
+                        // showToastMessage(dat, 0);
                     }
                 })
                 .catch((err) => {
@@ -62,7 +62,7 @@ export const NewJob = () => {
                 });
         }
         else {
-            showToastMessage(event.target, 0);
+            // showToastMessage(event.target, 0);
         }
     }
 

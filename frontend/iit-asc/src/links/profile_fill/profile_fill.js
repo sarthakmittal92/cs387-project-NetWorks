@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { useNavigate} from "react-router-dom";
 export const FillProfile = () => {
 
@@ -17,23 +17,23 @@ export const FillProfile = () => {
         setEdu(newList);
     }
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("profile_fill" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("profile_fill" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("profile_fill" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("profile_fill" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     const handleSubmit = (event) => {
         console.log("profile_fill/handleSubmit: " + event.target);
         if (event.target) {
-            showToastMessage(event.target, 1);
+            // showToastMessage(event.target, 1);
             const inputs = event.target;
             fetch('http://localhost:5001/Q18', {
                 method: 'POST',
@@ -50,10 +50,10 @@ export const FillProfile = () => {
                 .then((response) => response.json())
                 .then((dat) => {
                     if (dat.value) {
-                        showToastMessage(dat, 1);
+                        // showToastMessage(dat, 1);
                     }
                     else {
-                        showToastMessage(dat, 0);
+                        // showToastMessage(dat, 0);
                     }
                 })
                 .catch((err) => {
@@ -61,7 +61,7 @@ export const FillProfile = () => {
                 });
         }
         else {
-            showToastMessage(event.target, 0);
+            // showToastMessage(event.target, 0);
         }
     }
 
@@ -111,7 +111,7 @@ export const FillProfile = () => {
     const handleWork = (event) => {
         console.log("profile_fill/handleWork: " + event.target.pos.value);
         if (event.target) {
-            showToastMessage(event.target, 1);
+            // showToastMessage(event.target, 1);
             const inputs = event.target;
             fetch('http://localhost:5001/Q26', {
                 method: 'POST',
@@ -129,10 +129,10 @@ export const FillProfile = () => {
                 .then((response) => response.json())
                 .then((dat) => {
                     if (dat.value) {
-                        showToastMessage(dat, 1);
+                        // showToastMessage(dat, 1);
                     }
                     else {
-                        showToastMessage(dat, 0);
+                        // showToastMessage(dat, 0);
                     }
                 })
                 .catch((err) => {
@@ -140,7 +140,7 @@ export const FillProfile = () => {
                 });
         }
         else {
-            showToastMessage(event.target, 0);
+            // showToastMessage(event.target, 0);
         }
     }
 
@@ -179,10 +179,10 @@ export const FillProfile = () => {
                 .then((response) => response.json())
                 .then((dat) => {
                     if (dat.value) {
-                        showToastMessage(dat, 1);
+                        // showToastMessage(dat, 1);
                     }
                     else {
-                        showToastMessage(dat, 0);
+                        // showToastMessage(dat, 0);
                     }
                 })
                 .catch((err) => {
@@ -190,7 +190,7 @@ export const FillProfile = () => {
                 });
         }
         else {
-            showToastMessage(edu, 0);
+            // showToastMessage(edu, 0);
         }
     }
     const handlePhoto = (event)=>{
@@ -206,11 +206,11 @@ export const FillProfile = () => {
                         body: formData,
                     }).then((response) => response.json());
                     if(dat.result==="Successful"){
-                        showToastMessage(dat.result,1); 
+                        // showToastMessage(dat.result,1); 
                         navigate("/home");
                     }
                     else{
-                        showToastMessage(dat.result,0); 
+                        // showToastMessage(dat.result,0); 
                     }
             }
         })();

@@ -1,23 +1,23 @@
 import "./invitations_sent.css"
 import { React, useState, useEffect } from 'react';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 
 export const InvitationsSent = () => {
 
     const [rows, setRows] = useState([]);
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("invitations_sent" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("invitations_sent" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("invitations_sent" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("invitations_sent" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     const handleRequest = (idx) => e => {
         const body = { receiver: rows[idx].user_id };
@@ -37,10 +37,10 @@ export const InvitationsSent = () => {
                     const trows = [...rows];
                     trows.splice(idx, 1);
                     setRows(trows);
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
@@ -61,11 +61,11 @@ export const InvitationsSent = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     setRows(dat.users);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {

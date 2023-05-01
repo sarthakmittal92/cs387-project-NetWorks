@@ -1,6 +1,6 @@
 import "./connections.css"
 import { React, useState, useEffect } from 'react';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 // import { useNavigate } from "react-router-dom";
 
 export const Connections = () => {
@@ -8,18 +8,18 @@ export const Connections = () => {
     const [rows, setRows] = useState([]);
     // const navigate = useNavigate();
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("connections" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("connections" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("connections" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("connections" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     // const handleChat = (idx) => {
     //     console.log("connections/handleChat" + idx);
@@ -47,11 +47,11 @@ export const Connections = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     setRows(dat.users);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {

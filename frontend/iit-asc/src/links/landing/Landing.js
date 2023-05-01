@@ -5,7 +5,7 @@ export const Landing = () => {
 
     var i = 0;
     var txt = 'NetWorks is a platform for anyone looking to advance their career. We cater to various professionals including small business owners, job seekers and even students. Members can use NetWorks to tap into a network of professionals, companies, and groups otherwise beyond their reach. Click on the login button to join the growing community now!';
-    var speed = 40;
+    var speed = 38;
     const msg = new SpeechSynthesisUtterance()
 
     const speechHandler = (msg) => {

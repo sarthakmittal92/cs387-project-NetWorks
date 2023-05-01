@@ -1,6 +1,6 @@
 import "./jobs_created.css"
 import { React, useState, useEffect } from 'react';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 
 export const JobsCreated = () => {
 
@@ -8,18 +8,18 @@ export const JobsCreated = () => {
     const [isRec, setRec] = useState(false);
     const [uid, setID] = useState(-1);
 
-    const showToastMessage = (data, val) => {
-        if (val) {
-            toast.success("jobs_created" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
-        else {
-            toast.error("jobs_created" + data, {
-                position: toast.POSITION.TOP_RIGHT
-            })
-        }
-    }
+    // const showToastMessage = (data, val) => {
+    //     if (val) {
+    //         toast.success("jobs_created" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         });
+    //     }
+    //     else {
+    //         toast.error("jobs_created" + data, {
+    //             position: toast.POSITION.TOP_RIGHT
+    //         })
+    //     }
+    // }
 
     const handleRequest = (idx) => e => {
         const body = { job_id: rows[idx].job_id };
@@ -39,10 +39,10 @@ export const JobsCreated = () => {
                     const trows = [...rows];
                     trows.splice(idx, 1);
                     setRows(trows);
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {
@@ -63,12 +63,12 @@ export const JobsCreated = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     setRec(true);
                     setID(dat.user_id);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                     setRec(false);
                     setID(dat.user_id);
                 }
@@ -88,11 +88,11 @@ export const JobsCreated = () => {
             .then((response) => response.json())
             .then((dat) => {
                 if (dat.value) {
-                    showToastMessage(dat, 1);
+                    // showToastMessage(dat, 1);
                     setRows(dat.jobs);
                 }
                 else {
-                    showToastMessage(dat, 0);
+                    // showToastMessage(dat, 0);
                 }
             })
             .catch((err) => {

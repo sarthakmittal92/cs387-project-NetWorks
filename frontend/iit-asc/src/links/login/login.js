@@ -1,4 +1,4 @@
-import React from "react"
+import React ,{useEffect}from "react"
 import { useNavigate,useLocation } from "react-router-dom";
 import './login.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -30,6 +30,7 @@ export const Login  = ({ setAuth }) => {
         var checkBox = document.getElementById("reg-log");
         checkBox.checked = !checkBox.checked;
     }
+   
 
     const Auth_U = ()=>{
 
@@ -64,6 +65,8 @@ export const Login  = ({ setAuth }) => {
         }
   
       }
+
+
 
       const register = () =>{
 
@@ -101,6 +104,29 @@ export const Login  = ({ setAuth }) => {
          
         }
       }
+
+      useEffect(()=>{
+
+        fetch('http://localhost:5001/Q0', {
+              method: 'POST',   
+              headers: {
+                'Content-type': 'application/json',
+              },
+              credentials:'include',
+              withCredentials:true,
+            })
+          .then((response) => response.json())
+          .then((dat) => {
+            console.log(dat);
+            if(dat.val){
+              navigate(redirectPathS, { replace: true });
+            }
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+        
+      })
 
     return(
         <>

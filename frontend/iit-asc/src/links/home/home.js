@@ -5,7 +5,7 @@ import { Makepost} from '../makepost/makepost'
 import { OneFeed} from '../one_feed/one_feed'
 import { Smallprofile} from '../smallprofile/smallprofile'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
-let count = 1;
+let count = 0;
 export const Home = () => {
     
     const [numfeed,setnumfeed] = useState(5);
